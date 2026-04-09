@@ -16,13 +16,6 @@ import re
 import pandas as pd
 from .utils import get_output_dir
 
-try:
-    from IPython.display import display
-    IN_NOTEBOOK = True
-except ImportError:
-    IN_NOTEBOOK = False
-
-
 # ── Computation ───────────────────────────────────────────────
 
 def flag_check_1nf(df: pd.DataFrame, delimiters: list[str]) -> pd.DataFrame:
@@ -81,8 +74,6 @@ def run_1nf_check(tabellen: dict, rules: dict, run_dir: str) -> None:
             print("  Keine potenziellen 1NF-Verletzungen gefunden.")
         else:
             print(f"  {len(violations)} Kandidaten geflaggt.")
-            if IN_NOTEBOOK:
-                display(violations)
             output_path = os.path.join(
                 output_dir, f"{var_name}_1nf_violations_flagged.csv"
             )

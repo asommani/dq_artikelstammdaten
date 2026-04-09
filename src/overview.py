@@ -15,7 +15,6 @@ import os
 import pandas as pd
 import dataframe_image as dfi
 from .utils import fehlend_pro_spalte, get_output_dir
-import re
 # display() only if running in a notebook
 try:
     from IPython.display import display
@@ -68,17 +67,18 @@ def compute_uebersicht(df: pd.DataFrame) -> pd.DataFrame:
 
 def compute_spalten_detail(df: pd.DataFrame) -> pd.DataFrame:
     """Berechnet spaltenweise Qualitaetskennzahlen."""
-    gesamt = fehlend_pro_spalte(df)
+    gesamt     = fehlend_pro_spalte(df)
+    col_clean  = df.apply(lambda col: col.replace(r"^\s*$", pd.NA, regex=True) if col.dtype == "object" else col) #for string columns, any value that matches the regex ^\s*$ (i.e. empty string or whitespace-only) gets replaced with pd.NA. The rest of the values are untouched.
+    eindeutige = col_clean.nunique()
 
     return pd.DataFrame({
         "Spalte":           df.columns,
         "Datentyp":         df.dtypes.values,
         "Fehlend":          gesamt.values,
-        "% Fehlend":        [f"{x:.1f}%" for x in (gesamt / len(df) * 100).values],
-        "Eindeutige Werte": df.nunique().values,
-        "% Eindeutig":      [f"{x:.1f}%" for x in (df.nunique() / len(df) * 100).values],
+        "% Fehlend":        [f"{x:.2f}%" for x in (gesamt / len(df) * 100).values],
+        "Eindeutige Werte": eindeutige.values,
+        "% Eindeutig":      [f"{x:.2f}%" for x in (eindeutige / len(df) * 100).values],
     })
-
 
 # ── Rendering ─────────────────────────────────────────────────
 

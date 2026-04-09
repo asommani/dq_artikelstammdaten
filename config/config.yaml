@@ -22,3 +22,6 @@ tabellen:
 # ── Export ───────────────────────────────────────────────────
 export:
   dpi: 600
+# ── Checks to run ───────────────────────────────────────────────────
+normalization:
+  check_1nf: false

@@ -16,13 +16,19 @@ pflichtfelder:
     - Breite_cm
     - Hoehe_cm
 
-# ── Schwellenwerte ────────────────────────────────────────────
-# Grenzwerte fuer KPI-Bewertung (gut/schlecht)
-schwellenwerte:
-  vollstaendigkeit_min:      0.98   # mind. 98% Pflichtfelder befuellt
-  konsistenz_abweichung_max: 0.10   # max. 10% Abweichung Grunddaten vs. Werksdaten
-  preis_min:                 0.10   # UVP mind. 0.10 EUR (Sentinel-Erkennung)
-  preis_max:                 999.99 # UVP max. 999.99 EUR (Sentinel-Erkennung)
+# ── Atomizitätsprüfung ────────────────────────────────────────────
+atomicity_delimiters:
+  - ","
+  - ";"
+  - "/"
+  - "("
+  - ")"
+
+# ── Eindeutigkeit ────────────────────────────────────────────
+eindeutigkeit_felder:
+  artikeldaten_grunddaten:
+    - Artikelnummer
+    - GTIN
 
 # ── Gueltige Werte ────────────────────────────────────────────
 # Kontrollierte Vokabulare fuer kategorische Felder
@@ -43,10 +49,66 @@ gueltige_werte:
   mass_einheit:
     - cm
 
-# ── Atomizitätsprüfung ────────────────────────────────────────────
-atomicity_delimiters:
-  - ","
-  - ";"
-  - "/"
-  - "("
-  - ")"
+# # ── Konsistenz KPIs ────────────────────────────────────────────
+konsistenz_masse:
+  tabellen:
+    grund: artikeldaten_grunddaten
+    werk:  werksdaten
+  join_key:
+    - Artikelnummer
+    - Werk
+  vergleichspaare:
+    - grund: Laenge_cm
+      werk:  Laenge_cm_werk
+    - grund: Breite_cm
+      werk:  Breite_cm_werk
+    - grund: Hoehe_cm
+      werk:  Hoehe_cm_werk
+
+# Grenzwerte fuer KPI-Bewertung (gut/schlecht)
+schwellenwerte:
+  konsistenz_abweichung_max: 0.10   # max. 10% Abweichung Grunddaten vs. Werksdaten
+  # vollstaendigkeit_min:      0.98   # mind. 98% Pflichtfelder befuellt
+  preis_min:                 0.10   # UVP mind. 0.10 EUR (Sentinel-Erkennung)
+  preis_max:                 999.99 # UVP max. 999.99 EUR (Sentinel-Erkennung)
+
+konsistenz_einheit_masse:
+  - tabelle:  werksdaten
+    spalte:   Mass_Einheit
+    gueltige_werte: gueltige_werte.mass_einheit
+
+plausibilitaet_masse:
+  - tabelle: artikeldaten_grunddaten
+    spalten: [Laenge_cm, Breite_cm, Hoehe_cm]
+  - tabelle: werksdaten
+    spalten: [Laenge_cm_werk, Breite_cm_werk, Hoehe_cm_werk]
+
+gtin_check:
+  tabelle: artikeldaten_grunddaten
+  spalte:  GTIN
+  laenge:  13
+
+validitaet_vokabular:
+- tabelle: artikeldaten_grunddaten
+  spalte:  Mengeneinheit
+  gueltige_werte: gueltige_werte.mengeneinheit
+- tabelle: artikeldaten_grunddaten
+  spalte:  Temperaturzone
+  gueltige_werte: gueltige_werte.temperaturzone
+- tabelle: artikeldaten_grunddaten
+  spalte:  Pfandpflicht
+  gueltige_werte: gueltige_werte.pfandpflicht
+
+preisvalidierung:
+  tabelle:   preise
+  uvp_spalte: UVP
+  waehrung_spalte: Währung
+  gueltige_werte: gueltige_werte.waehrung
+  sentinel_werte: [9999.99, 0.01]
+  schwellenwerte: schwellenwerte.preis_min/preis_max  # already defined
+
+referenzintegritaet:
+- tabelle:   kategorisierung
+  spalte:    Artikelnummer
+  referenz_tabelle: artikeldaten_grunddaten
+  referenz_spalte:  Artikelnummer
