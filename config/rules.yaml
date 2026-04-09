@@ -1,0 +1,52 @@
+# ── Pflichtfelder ────────────────────────────────────────────
+# Felder die zwingend befuellt sein muessen (Vollstaendigkeit KPI)
+pflichtfelder:
+  artikeldaten_grunddaten:
+    - Artikelnummer
+    - Status
+    - Artikelname
+    - Warengruppe
+    - Bruttogewicht
+    - Nettogewicht in kg
+    - Mengeneinheit
+    - GTIN
+    - Pfandpflicht
+    - Temperaturzone
+    - Laenge_cm
+    - Breite_cm
+    - Hoehe_cm
+
+# ── Schwellenwerte ────────────────────────────────────────────
+# Grenzwerte fuer KPI-Bewertung (gut/schlecht)
+schwellenwerte:
+  vollstaendigkeit_min:      0.98   # mind. 98% Pflichtfelder befuellt
+  konsistenz_abweichung_max: 0.10   # max. 10% Abweichung Grunddaten vs. Werksdaten
+  preis_min:                 0.10   # UVP mind. 0.10 EUR (Sentinel-Erkennung)
+  preis_max:                 999.99 # UVP max. 999.99 EUR (Sentinel-Erkennung)
+
+# ── Gueltige Werte ────────────────────────────────────────────
+# Kontrollierte Vokabulare fuer kategorische Felder
+gueltige_werte:
+  mengeneinheit:
+    - g
+    - ml
+    - kg
+  temperaturzone:
+    - Ambient
+    - Kuehl
+    - Tiefkuehl
+  pfandpflicht:
+    - Ja
+    - Nein
+  waehrung:
+    - EUR
+  mass_einheit:
+    - cm
+
+# ── Atomizitätsprüfung ────────────────────────────────────────────
+atomicity_delimiters:
+  - ","
+  - ";"
+  - "/"
+  - "("
+  - ")"

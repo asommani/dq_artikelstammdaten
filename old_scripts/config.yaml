@@ -1,0 +1,48 @@
+# ── Projektmetadaten ────────────────────────────────────────
+projekt:
+  git_repository: dq_artikelstammdaten
+  version: "1.0"
+  autor: Anna Sommani
+  datum: "2026-04-13"
+  beschreibung: "Datenqualitätsanalyse Artikelstammdaten dm-drogerie markt"
+
+# ── Datei ────────────────────────────────────────────────────
+datei:
+  filename: "Recruiting_Aufgabe_Data_Analyst_08_25.xlsx"
+
+# ── Tabellenblätter ──────────────────────────────────────────
+tabellen:
+  artikeldaten_grunddaten: "Artikeldaten Grunddaten"
+  kategorisierung: "Kategorisierung"
+  preise: "Preise"
+  werksdaten: "Werksdaten"
+  lieferantendaten: "Lieferantendaten"
+
+# ── Pflichtfelder ────────────────────────────────────────────
+pflichtfelder:
+  artikeldaten_grunddaten:
+    - Artikelnummer
+    - Status
+    - Artikelname
+    - Warengruppe
+    - Bruttogewicht
+    - Nettogewicht in kg
+    - Mengeneinheit
+    - GTIN
+    - Pfandpflicht
+    - Temperaturzone
+    - Laenge_cm
+    - Breite_cm
+    - Hoehe_cm
+
+# ── Schwellenwerte ───────────────────────────────────────────
+schwellenwerte:
+  vollstaendigkeit_min: 0.98
+  konsistenz_abweichung_max: 0.10
+  preis_min: 0.10
+  preis_max: 999.99
+
+# ── Export ───────────────────────────────────────────
+export:
+  bilder:
+    dpi: 600
