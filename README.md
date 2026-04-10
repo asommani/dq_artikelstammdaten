@@ -61,7 +61,7 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 - Deviation > 10% classified as inconsistent
 - Unit consistency (e.g. cm vs. mm)
 
-#### Additional Data Quality Checks
+### Additional Data Quality Checks
 
 Beyond the required KPIs, the analysis includes:
 
