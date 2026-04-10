@@ -13,7 +13,12 @@ __pycache__/
 
 
 # ─── Output files ───────────────────────────────────────────────────────────────
-output/*
-!output/.gitkeep
+#output/*
+#!output/.gitkeep
+output/**/*.png
+output/*.png
+output/normalisierungsanalyse/
+output/reporter/
 !output/dashboard/dashboard.html
 !output/dashboard/dashboard.png
+
