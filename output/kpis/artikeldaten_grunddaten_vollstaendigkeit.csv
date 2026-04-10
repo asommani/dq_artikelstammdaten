@@ -1,0 +1,15 @@
+feld,fehlend,vollstaendigkeit
+Artikelnummer,0,1.0
+Status,0,1.0
+Artikelname,0,1.0
+Warengruppe,3,0.9795918367346939
+Bruttogewicht,7,0.9523809523809523
+Nettogewicht in kg,10,0.9319727891156463
+Mengeneinheit,3,0.9795918367346939
+GTIN,3,0.9795918367346939
+Pfandpflicht,2,0.9863945578231292
+Temperaturzone,5,0.9659863945578231
+Laenge_cm,3,0.9795918367346939
+Breite_cm,4,0.9727891156462585
+Hoehe_cm,4,0.9727891156462585
+_gesamt,44,0.9769754055468342

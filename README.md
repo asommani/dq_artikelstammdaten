@@ -9,32 +9,36 @@ Rules are defined declaratively in YAML — adding a new domain requires no chan
 
 ```
 dq_artikelstammdaten/
-config/
-├── config.yaml          # paths, sheet names, export settings
-└── rules.yaml           # all business/analysis rules
-├── data/
-│   └── raw/                           # Place input files here (not tracked by git)
-|---- annahmen.md                   # Assumtions list
-src/
-├── __init__.py
-├── loader.py            # loads data + both configs
-├── overview.py        # Aufgabe 1a: Datenüberblick
-├── normalization.py   # Aufgabe 1b: Normalformanalyse
-├── kpi.py               # Aufgabe 2: scalable functions driven by rules.yaml 
-└── reporter.py          # Aufgabe 3 extra analysis, mainly domain specific
-|
-|-- output/
-|    └── 2026-04-08_14-36-27/   # each run gets its own folder
-|        ├── datenueberblick/
-|        └── normalisierungsanalyse/
-├── tests/
-│   └── 
-├── run_analysis.py          # automated, repeatable: overview + KPIs + dashboard
-├── normalization_analysis.py  # one-time schema audit, exploratory
-├── missing: dashboard?                  # Interactive dashboard
+├── .gitignore
+├── README.md
+├── annahmen.md       # Assumptions list
+├── config
+│   ├── config.yaml       # paths, sheet names, export settings
+│   └── rules.yaml        # all business/analysis rules
+├── data
+│   └── raw               # Place input files here (not tracked by git)
+│       └── .gitkeep
+├── diagnostics
+│   └── normalization_analysis.py   # one-time schema audit, exploratory
+├── output
+│   ├── .gitkeep
+│   └── dashboard
+│       ├── dashboard.html # only output already on the repository for visualization
+│       └── dashboard.png
 ├── requirements.txt
-└── .gitignore
+├── run_analysis.py       # automated, repeatable: overview + KPIs + dashboard
+└── src
+    ├── __init__.py
+    ├── dashboard.py        # Dashboard
+    ├── kpi.py        # Scalable functions driven by rules.yaml 
+    ├── loader.py       # loads data + both configs
+    ├── normalization.py        # Normalformanalyse
+    ├── overview.py       # Datenüberblick
+    ├── reporter.py       # Extra analysis, mainly domain specific
+    └── utils.py
 ```
+
+
 
 ---
 
@@ -61,18 +65,14 @@ source .venv/bin/activate        # macOS / Linux
 pip install -r requirements.txt
 ```
 
-### 4. Place the input files
+### 4. Place the input file
 
 - Copy the provided Excel file into `data/raw/`:
   ```
   data/raw/Recruiting_Aufgabe_Data_Analyst_08_25.xlsx
   ```
-- Copy the task brief PDF into `docs/`:
-  ```
-  docs/Recruiting_Aufgabe_Data_Analyst_08_25.pdf
-  ```
 
-These files are excluded from version control (see `.gitignore`).
+The raw data is excluded from version control (see `.gitignore`).
 
 ---
 
@@ -83,10 +83,7 @@ These files are excluded from version control (see `.gitignore`).
 Produces `output/dq_report.xlsx` and `output/dq_dashboard.png`:
 
 ```bash
-python run_analysis.py \
-  --config config/rules_artikelstammdaten.yaml \
-  --data   data/raw/Recruiting_Aufgabe_Data_Analyst_08_25.xlsx \
-  --output output/
+python run_analysis.py 
 ```
 
 ### Launch the interactive dashboard

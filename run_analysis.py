@@ -27,12 +27,12 @@ from src.kpi import (
     run_eindeutigkeit,
     run_konsistenz_masse,
     run_konsistenz_einheit_masse,
-    run_plausibilitaet_masse,
-    run_gtin_format,
-    run_validitaet_vokabular,
 )
 
 from src.reporter import (
+    run_plausibilitaet_masse,
+    run_gtin_format,
+    run_validitaet_vokabular,
     run_preisvalidierung,
     run_referenzintegritaet,
     run_werksdaten_konflikte,
