@@ -67,28 +67,13 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 
 Beyond the required KPIs, the analysis includes:
 
-- GTIN format validation (EAN-13)
 - Price validation (sentinel values, currency consistency)
 - Reference integrity checks
-- Plausibility checks (e.g. negative or zero dimensions)
+- Werksdaten conflict detection 
+- Plausibility checks on physical measurements (e.g. negative or zero dimensions)
+- Articles without corresponding Werksdaten
+- GTIN format validation (EAN-13)
 - Controlled vocabulary validation
-
-### Completeness
-- Share of required fields without missing values
-
-### Uniqueness
-- Article number uniqueness
-- GTIN uniqueness
-
-### Consistency
-- Dimension comparison (Grunddaten vs. Werksdaten)
-- Unit consistency (e.g. cm vs. mm)
-
-### Additional Checks
-- GTIN format validation
-- Price validation (sentinel values, currency)
-- Reference integrity
-- Plausibility checks (e.g. negative or zero dimensions)
 
 ---
 
@@ -173,7 +158,7 @@ Defines:
 - thresholds
 - controlled vocabularies
 
-👉 This separation allows adapting business rules without changing code.
+This separation allows adapting business rules without changing python code.
 
 ---
 
