@@ -31,7 +31,7 @@ Poor data quality has direct operational impact:
 
 The company lacks a standardized way to measure and monitor data quality.
 
-👉 This project introduces a **repeatable, scalable approach** to data quality management.
+This project introduces a **repeatable, scalable approach** to data quality management.
 
 ---
 
