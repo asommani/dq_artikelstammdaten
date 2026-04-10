@@ -39,13 +39,39 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 
 - Config-driven architecture (`config.yaml`, `rules.yaml`)
 - Automated KPI computation
-- Modular pipeline (overview → KPIs → diagnostics → dashboard)
+- Modular pipeline (overview → KPIs → reporter → dashboard)
 - Reproducible outputs
 - Clear separation of logic and business rules
 
 ---
 
 ## KPIs Implemented
+
+### Core KPIs (as defined in the task)
+
+#### Completeness
+- Share of required fields without missing values
+
+#### Uniqueness
+- Article number uniqueness
+- GTIN uniqueness
+
+#### Consistency
+- Dimension comparison (Grunddaten vs. Werksdaten)
+- Deviation > 10% classified as inconsistent
+- Unit consistency (e.g. cm vs. mm)
+
+---
+
+### Additional Data Quality Checks
+
+Beyond the required KPIs, the analysis includes:
+
+- GTIN format validation (EAN-13)
+- Price validation (sentinel values, currency consistency)
+- Reference integrity checks
+- Plausibility checks (e.g. negative or zero dimensions)
+- Controlled vocabulary validation
 
 ### Completeness
 - Share of required fields without missing values
