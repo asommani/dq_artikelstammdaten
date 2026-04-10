@@ -47,7 +47,7 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 
 ## KPIs Implemented
 
-### Core KPIs (as defined in the task)
+### Core KPIs 
 
 #### Completeness
 - Share of required fields without missing values
