@@ -1,6 +1,7 @@
 # ─── Vertrauliche Daten und Dokumente ───────────────────────────────────────
-data/raw/
-Recruiting_Aufgabe_Data_Analyst_08_25.pdf
+data/raw/*
+!data/raw/.gitkeep
+*.pdf
 *.pptx
 
 # ─── Python ─────────────────────────────────────────────────────────────────
@@ -12,4 +13,6 @@ __pycache__/
 
 
 # ─── Output files ───────────────────────────────────────────────────────────────
-output/
+output/*
+!output/.gitkeep
+!data/output/dashboard.html
