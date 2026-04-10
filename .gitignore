@@ -15,4 +15,5 @@ __pycache__/
 # ─── Output files ───────────────────────────────────────────────────────────────
 output/*
 !output/.gitkeep
-!data/output/dashboard.html
+!data/output/dashboard/dashboard.html
+!data/output/dashboard/dashboard.png
