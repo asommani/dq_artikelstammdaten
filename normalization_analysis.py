@@ -1,7 +1,7 @@
 #%%
 import os
 import pandas as pd
-# run_analysis.py lives in the project root, so __file__ gives us the root directly.
+#this script lives in the project root, so __file__ gives us the root directly.
 project_dir = os.path.dirname(os.path.abspath(__file__))
 
 from src.loader import load_config, load_rules, load_tabellen
@@ -27,8 +27,8 @@ print(f"Rows after dropping duplicates: {len(df)}")
 # show that Artikelnummer alone is not unique
 print(f"Zeilen gesamt:         {len(df)}")
 print(f"Eindeutige Artikelnr.: {df['Artikelnummer'].nunique()}")
-print()
-
+print(df.columns)
+#%%
 # show that even all columns together don't give a clean key
 combos = [
     ["Artikelnummer"],
@@ -141,11 +141,14 @@ conflicts_styled =conflicts.style.hide(axis="index").set_caption("Konflikte in W
     subset=["konflikt_in"]
 )
 conflicts_styled
+
 # #save conflicts to image for presentation with dataframe_image as dfioutput_subdir = get_output_dir(run_dir, "normalisierungsanalyse")
-# import dataframe_image as dfi
-# output_path = os.path.join(run_dir, f"werksdaten_pk_conflicts.png")
-# dfi.export(conflicts_styled, output_path, table_conversion="matplotlib", dpi=300)
-# print(f"  Gespeichert: {os.path.basename(output_path)}")
-
-
+try:
+    import dataframe_image as dfi
+except ImportError:
+    dfi = None
+if config.get("export", {}).get("save_png", False) and dfi is not None:
+    output_path = os.path.join(run_dir, "normalisierungsanalyse", "werksdaten_pk_conflicts.png")
+    dfi.export(conflicts_styled, output_path, table_conversion="matplotlib", dpi=300)
+    print(f"  Gespeichert: {os.path.basename(output_path)}")
 # %%

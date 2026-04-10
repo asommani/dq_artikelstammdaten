@@ -14,15 +14,14 @@ config/
 └── rules.yaml           # all business/analysis rules
 ├── data/
 │   └── raw/                           # Place input files here (not tracked by git)
-├── docs/
-|    └── annahmen.md                   # Assumtions list
+|---- annahmen.md                   # Assumtions list
 src/
 ├── __init__.py
 ├── loader.py            # loads data + both configs
 ├── overview.py        # Aufgabe 1a: Datenüberblick
 ├── normalization.py   # Aufgabe 1b: Normalformanalyse
-├── kpi.py               # Aufgabe 2
-└── reporter.py          # Aufgabe 3
+├── kpi.py               # Aufgabe 2: scalable functions driven by rules.yaml 
+└── reporter.py          # Aufgabe 3 extra analysis, mainly domain specific
 |
 |-- output/
 |    └── 2026-04-08_14-36-27/   # each run gets its own folder
@@ -32,7 +31,7 @@ src/
 │   └── 
 ├── run_analysis.py          # automated, repeatable: overview + KPIs + dashboard
 ├── normalization_analysis.py  # one-time schema audit, exploratory
-├── missing: streamlit_app.py                   # Interactive dashboard
+├── missing: dashboard?                  # Interactive dashboard
 ├── requirements.txt
 └── .gitignore
 ```

@@ -18,11 +18,17 @@ from .utils import fehlend_pro_spalte, get_output_dir
 # display() only if running in a notebook
 try:
     from IPython.display import display
-    IN_NOTEBOOK = True
+    from IPython import get_ipython
+
+    IN_NOTEBOOK = get_ipython() is not None and get_ipython().__class__.__name__ == "ZMQInteractiveShell"
 except ImportError:
     IN_NOTEBOOK = False
 
-
+try:
+    import dataframe_image as dfi
+except ImportError:
+    dfi = None
+    
 # ── Computation ───────────────────────────────────────────────
 
 def compute_uebersicht(df: pd.DataFrame) -> pd.DataFrame:
@@ -110,11 +116,12 @@ def _style_spalten_detail(df_detail: pd.DataFrame, df_orig: pd.DataFrame, table_
     )
 
 
-def _export(styled, path: str, dpi: int) -> None:
+def _export(styled, path: str, dpi: int, save_png: bool = False) -> None:
     if IN_NOTEBOOK:
         display(styled)
-    dfi.export(styled, path, table_conversion="matplotlib", dpi=dpi)
-    print(f"  Gespeichert: {os.path.basename(path)}")
+    if save_png and dfi is not None:
+        dfi.export(styled, path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(path)}")
 
 # ── Hauptfunktion ─────────────────────────────────────────────
 
@@ -129,6 +136,7 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
     """
     output_dir = get_output_dir(run_dir, "datenueberblick")
     dpi        = config["export"]["dpi"]
+    save_png   = config.get("export", {}).get("save_png", False)
 
     for var_name, df in tabellen.items():
         table_name = config["tabellen"][var_name]
@@ -140,6 +148,7 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             _style_uebersicht(uebersicht, table_name),
             os.path.join(output_dir, f"{var_name}_uebersicht.png"),
             dpi=int(dpi * 0.5),
+            save_png = save_png,
         )
 
         # Spalten-Detail
@@ -148,6 +157,7 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             _style_spalten_detail(spalten_detail, df, table_name),
             os.path.join(output_dir, f"{var_name}_spalten_detail.png"),
             dpi=dpi,
+            save_png = save_png,
         )
 
         # Head
@@ -155,4 +165,5 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             df.head(10).style.set_caption(f"{table_name} -- erste Zeilen"),
             os.path.join(output_dir, f"{var_name}_head.png"),
             dpi=dpi,
+            save_png = save_png,
         )

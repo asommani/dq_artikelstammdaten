@@ -41,13 +41,33 @@ gueltige_werte:
     - Ambient
     - Kuehl
     - Tiefkuehl
+    - Kühl
+    - Tiefkühl 
   pfandpflicht:
     - Ja
     - Nein
   waehrung:
     - EUR
+    # - CZK
+    # - PLN
   mass_einheit:
     - cm
+  kategorie:
+    - Backwaren
+    - Fleisch & Wurst
+    - Frühstücksartikel
+    - Getränke        # standardised form
+    - Gewürze & Saucen
+    - Molkereiprodukte
+    - Non-Food
+    - Obst & Gemüse
+    - Snacks
+    - Süßwaren
+    - Teigwaren & Reis
+    - Tiefkühlkost    # standardised form
+    - Frischware
+    - Trockenware  
+    
 
 # # ── Konsistenz KPIs ────────────────────────────────────────────
 konsistenz_masse:
@@ -69,14 +89,16 @@ konsistenz_masse:
 schwellenwerte:
   konsistenz_abweichung_max: 0.10   # max. 10% Abweichung Grunddaten vs. Werksdaten
   # vollstaendigkeit_min:      0.98   # mind. 98% Pflichtfelder befuellt
-  preis_min:                 0.10   # UVP mind. 0.10 EUR (Sentinel-Erkennung)
-  preis_max:                 999.99 # UVP max. 999.99 EUR (Sentinel-Erkennung)
+  preis_min:                 0.10   # mind. 0.10 EUR (Sentinel-Erkennung)
+  preis_max:                 999.99 # max. 999.99 EUR (Sentinel-Erkennung)
 
 konsistenz_einheit_masse:
   - tabelle:  werksdaten
     spalte:   Mass_Einheit
     gueltige_werte: gueltige_werte.mass_einheit
 
+
+# Extra checks for Aufgabe 3
 plausibilitaet_masse:
   - tabelle: artikeldaten_grunddaten
     spalten: [Laenge_cm, Breite_cm, Hoehe_cm]

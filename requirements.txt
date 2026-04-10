@@ -1,0 +1,10 @@
+# core
+pandas
+numpy
+pyyaml
+openpyxl
+plotly
+
+# optional: only needed if export.save_png: true in config.yaml
+# pip install dataframe_image
+# dataframe_image

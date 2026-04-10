@@ -22,6 +22,8 @@ tabellen:
 # ── Export ───────────────────────────────────────────────────
 export:
   dpi: 600
+  save_png: false  # Ob die Tabellen auch als PNG-Bilder gespeichert werden sollen (für Präsentationen / fast visuelle Darstellung)
 # ── Checks to run ───────────────────────────────────────────────────
 normalization:
   check_1nf: false
+

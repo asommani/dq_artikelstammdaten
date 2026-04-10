@@ -11,14 +11,19 @@ import pandas as pd
 import numpy as np
 
 from .utils import fehlend_pro_spalte, get_output_dir
-import dataframe_image as dfi
 
 try:
     from IPython.display import display
-    IN_NOTEBOOK = True
+    from IPython import get_ipython
+    IN_NOTEBOOK = get_ipython() is not None and get_ipython().__class__.__name__ == "ZMQInteractiveShell"
 except ImportError:
     IN_NOTEBOOK = False
 
+try:
+    import dataframe_image as dfi
+except ImportError:
+    dfi = None
+    
 # ── Vollstaendigkeit ────────────────────────────────────────
 
 def check_vollstaendigkeit(df: pd.DataFrame, pflichtfelder: list[str]) -> pd.DataFrame:
@@ -67,9 +72,10 @@ def run_vollstaendigkeit(tabellen: dict, rules: dict, config: dict, run_dir: str
 
         # PNG
         styled  = _style_vollstaendigkeit(result, config["tabellen"][tabelle])
-        png_path = os.path.join(output_dir, f"{tabelle}_vollstaendigkeit.png")
-        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
-        print(f"  Gespeichert: {os.path.basename(png_path)}")
+        if config.get("export", {}).get("save_png", False) and dfi is not None:
+            png_path = os.path.join(output_dir, f"{tabelle}_vollstaendigkeit.png")
+            dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+            print(f"  Gespeichert: {os.path.basename(png_path)}")
 
         if IN_NOTEBOOK:
             display(_style_vollstaendigkeit(result, config["tabellen"][tabelle]))
@@ -122,9 +128,10 @@ def run_eindeutigkeit(tabellen: dict, rules: dict, config: dict, run_dir: str) -
 
         # PNG
         styled   = _style_eindeutigkeit(result, config["tabellen"][tabelle])
-        png_path = os.path.join(output_dir, f"{tabelle}_eindeutigkeit.png")
-        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
-        print(f"  Gespeichert: {os.path.basename(png_path)}")
+        if config.get("export", {}).get("save_png", False) and dfi is not None:
+            png_path = os.path.join(output_dir, f"{tabelle}_eindeutigkeit.png")
+            dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+            print(f"  Gespeichert: {os.path.basename(png_path)}")
 
         if IN_NOTEBOOK:
             display(styled)
@@ -224,9 +231,10 @@ def run_konsistenz_masse(tabellen: dict, rules: dict, config: dict, run_dir: str
 
     # PNG
     styled   = _style_konsistenz_masse(result)
-    png_path = os.path.join(output_dir, "konsistenz_masse.png")
-    dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
-    print(f"  Gespeichert: {os.path.basename(png_path)}")
+    if config.get("export", {}).get("save_png", False) and dfi is not None:
+        png_path = os.path.join(output_dir, "konsistenz_masse.png")
+        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(png_path)}")
 
     if IN_NOTEBOOK:
         display(styled)
@@ -298,9 +306,182 @@ def run_konsistenz_einheit_masse(tabellen: dict, rules: dict, config: dict, run_
 
     # PNG
     styled   = _style_konsistenz_einheit_masse(result)
-    png_path = os.path.join(output_dir, "konsistenz_einheit_masse.png")
-    dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
-    print(f"  Gespeichert: {os.path.basename(png_path)}")
+    if config.get("export", {}).get("save_png", False) and dfi is not None:
+        png_path = os.path.join(output_dir, "konsistenz_einheit_masse.png")
+        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(png_path)}")
+
+    if IN_NOTEBOOK:
+        display(styled)
+
+    return result
+
+
+#%%
+##--------- Aufgabe 3 extra analysis ----------------
+# ── Plausibilitaet: Masse ─────────────────────────────────────
+
+def check_plausibilitaet_masse(
+    tabellen: dict,
+    checks:   list[dict],
+) -> pd.DataFrame:
+    rows = []
+    for check in checks:
+        df      = tabellen[check["tabelle"]]
+        spalten = check["spalten"]
+
+        mask_null        = df[spalten].isnull().any(axis=1)
+        mask_implausibel = (~mask_null) & (df[spalten] <= 0).any(axis=1)
+
+        n_gesamt      = len(df)
+        n_null        = int(mask_null.sum())
+        n_implausibel = int(mask_implausibel.sum())
+        n_plausibel   = n_gesamt - n_null - n_implausibel
+
+        rows.append({
+            "tabelle":        check["tabelle"],
+            "spalten":        ", ".join(spalten),
+            "gesamt":         n_gesamt,
+            "fehlend":        n_null,
+            "implausibel":    n_implausibel,
+            "implausibel_rate": n_implausibel / n_gesamt if n_gesamt > 0 else None,
+            "plausibel":      n_plausibel,
+            "plausibel_rate": n_plausibel / n_gesamt if n_gesamt > 0 else None,
+        })
+    return pd.DataFrame(rows)
+
+
+def _style_plausibilitaet_masse(df_result: pd.DataFrame) -> pd.Styler:
+    return (
+        df_result.style
+        .hide(axis="index")
+        .set_caption("Plausibilität – Maße (Nullwerte & Negativwerte)")
+        .format({"plausibel_rate": "{:.1%}",
+                 "implausibel_rate": "{:.1%}",
+                 })
+    )
+
+
+def run_plausibilitaet_masse(tabellen: dict, rules: dict, config: dict, run_dir: str) -> pd.DataFrame:
+    output_dir = get_output_dir(run_dir, "kpis")
+    dpi        = config["export"]["dpi"]
+
+    result = check_plausibilitaet_masse(
+        tabellen = tabellen,
+        checks   = rules["plausibilitaet_masse"],
+    )
+
+    # CSV
+    csv_path = os.path.join(output_dir, "plausibilitaet_masse.csv")
+    result.to_csv(csv_path, index=False)
+    print(f"  Gespeichert: {os.path.basename(csv_path)}")
+
+    # PNG
+    styled   = _style_plausibilitaet_masse(result)
+    if config.get("export", {}).get("save_png", False) and dfi is not None:
+        png_path = os.path.join(output_dir, "plausibilitaet_masse.png")
+        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(png_path)}")
+
+    if IN_NOTEBOOK:
+        display(styled)
+
+    return result
+
+# ── GTIN / EAN-13 Formatpruefung ─────────────────────────────
+
+def check_gtin_format(
+    tabellen:   dict,
+    gtin_check: dict,
+) -> pd.DataFrame:
+    df     = tabellen[gtin_check["tabelle"]]
+    spalte = gtin_check["spalte"]
+    laenge = gtin_check["laenge"]
+
+    col       = df[spalte].dropna()
+    n_gesamt  = len(df)
+    n_fehlend = int(df[spalte].isnull().sum())
+
+    gtin_str     = col.astype(int).astype(str)
+    mask_invalid = gtin_str.str.len() != laenge
+    n_invalid    = int(mask_invalid.sum())
+    n_valid      = n_gesamt - n_fehlend - n_invalid
+
+    return pd.DataFrame([{
+        "tabelle":      gtin_check["tabelle"],
+        "spalte":       spalte,
+        "gesamt":       n_gesamt,
+        "fehlend":      n_fehlend,
+        "valid":        n_valid,
+        "valid_rate":   n_valid   / n_gesamt if n_gesamt > 0 else None,
+        "invalid":      n_invalid,
+        "invalid_rate": n_invalid / n_gesamt if n_gesamt > 0 else None,
+    }])
+
+def _style_gtin_format(df_result: pd.DataFrame) -> pd.Styler:
+    return (
+        df_result.style
+        .hide(axis="index")
+        .set_caption("GTIN – EAN-13 Formatprüfung")
+        .format({
+            "valid_rate":   "{:.1%}",
+            "invalid_rate": "{:.1%}",
+        })
+    )
+
+
+def run_gtin_format(tabellen: dict, rules: dict, config: dict, run_dir: str) -> pd.DataFrame:
+    output_dir = get_output_dir(run_dir, "kpis")
+    dpi        = config["export"]["dpi"]
+
+    result = check_gtin_format(
+        tabellen   = tabellen,
+        gtin_check = rules["gtin_check"],
+    )
+
+    # CSV
+    csv_path = os.path.join(output_dir, "gtin_format.csv")
+    result.to_csv(csv_path, index=False)
+    print(f"  Gespeichert: {os.path.basename(csv_path)}")
+
+    # PNG
+    styled   = _style_gtin_format(result)
+    if config.get("export", {}).get("save_png", False) and dfi is not None:
+        png_path = os.path.join(output_dir, "gtin_format.png")
+        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(png_path)}")
+
+    if IN_NOTEBOOK:
+        display(styled)
+
+    return result
+
+def run_validitaet_vokabular(tabellen: dict, rules: dict, config: dict, run_dir: str) -> pd.DataFrame:
+    output_dir = get_output_dir(run_dir, "kpis")
+    dpi        = config["export"]["dpi"]
+
+    result = check_konsistenz_einheit_masse(
+        tabellen = tabellen,
+        checks   = rules["validitaet_vokabular"],
+        rules    = rules,
+    ).drop(columns=["einheitlich"])
+
+    # CSV
+    csv_path = os.path.join(output_dir, "validitaet_vokabular.csv")
+    result.to_csv(csv_path, index=False)
+    print(f"  Gespeichert: {os.path.basename(csv_path)}")
+
+    # PNG
+    styled   = (
+        result.style
+        .hide(axis="index")
+        .set_caption("Validität – Kontrollierte Vokabulare")
+        .format({"valid_rate": "{:.1%}", "invalid_rate": "{:.1%}"})
+    )
+    if config.get("export", {}).get("save_png", False) and dfi is not None:
+        png_path = os.path.join(output_dir, "validitaet_vokabular.png")
+        dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
+        print(f"  Gespeichert: {os.path.basename(png_path)}")
 
     if IN_NOTEBOOK:
         display(styled)

@@ -1,3 +1,4 @@
+#%%
 """
 utils.py -- Gemeinsame Hilfsfunktionen fuer Pfade und Datenqualitaet.
 """
@@ -6,8 +7,9 @@ import os
 import yaml
 import pandas as pd
 from datetime import datetime
-
-
+import contextlib
+import io
+#%%
 # ── Pfade ─────────────────────────────────────────────────────
 
 def get_project_dir() -> str:
