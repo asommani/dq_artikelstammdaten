@@ -18,7 +18,6 @@ dq_artikelstammdaten/
 ├── docs/
 │   └── README.md
 ├── run_analysis.py        ← CLI entry point
-├── streamlit_app.py       ← interactive dashboard
 ├── requirements.txt
 └── .gitignore
 

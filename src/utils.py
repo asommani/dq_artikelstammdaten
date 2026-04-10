@@ -6,9 +6,8 @@ utils.py -- Gemeinsame Hilfsfunktionen fuer Pfade und Datenqualitaet.
 import os
 import yaml
 import pandas as pd
-from datetime import datetime
-import contextlib
-import io
+
+
 #%%
 # ── Pfade ─────────────────────────────────────────────────────
 
@@ -26,12 +25,10 @@ def get_project_dir() -> str:
 
 def get_run_output_dir(project_dir: str) -> str:
     """
-    Erstellt einen timestamped Output-Ordner fuer diesen Run.
-    z.B. output/2026-04-08_14-36-27/
+    Erstellt einen Output-Ordner fuer diesen Run.
     """
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    #path = os.path.join(project_dir, "output", timestamp)
-    path = os.path.join(project_dir, "output", 'now')  # for easier access during development
+    #path = os.path.join(project_dir, "output", 'v1')  # for easier access during development
+    path = os.path.join(project_dir, "output")  # for easier access during development
 
     os.makedirs(path, exist_ok=True)
     return path

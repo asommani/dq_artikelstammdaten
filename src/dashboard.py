@@ -3,10 +3,10 @@ dashboard.py -- Aufgabe 3: Visualisierung der Datenqualitaet.
 
 Erzeugt ein interaktives Plotly-Dashboard mit 5 Panels:
     Panel 1 -- KPI Scorecard (Vollstaendigkeit, Eindeutigkeit, Konsistenz Masse)
-    Panel 2 -- Preisvalidierung (Sentinel, Waehrung, Valid)
+    Panel 2 -- Vollstaendigkeit per Pflichtfeld
     Panel 3 -- Masse Konsistenz (Grunddaten vs. Werksdaten + Einheitenfehler)
-    Panel 4 -- Kategorisierung Referenzintegritaet (Phantom Records)
-    Panel 5 -- Vollstaendigkeit per Pflichtfeld
+    Panel 4 -- Preisvalidierung (Sentinel, Waehrung, Valid)
+    Panel 5 -- Kategorisierung Referenzintegritaet (Phantom Records)
 
 Output:  output/<run>/dashboard/dashboard.html  +  dashboard.png
 """
@@ -19,9 +19,11 @@ from .utils import get_output_dir
 
 # ── Design ────────────────────────────────────────────────────
 DM_ROT  = "#CC0033"
-GRUEN   = "#27AE60"   # kept for non-KPI charts (bars, donuts)
-GELB    = "#E67E22"
-ROT     = "#E74C3C"
+GRUEN   = "#1A9850" #"#27AE60"   # kept for KPI gauge steps only
+BLAU    = "#1A9850" #"#3E94C6"   # valid/korrekt/referenziert in panels 3-5 (neutral positive)
+GELB    = "#f7c434" #"#E8A838"
+ORANGE  = "#FC8D59" #"#DD7647"
+ROT     = "#D73027" #"#D94139"
 GRAU_BG = "#F4F6F7"
 GRAU_LN = "#D5D8DC"
 GRAU_TX = "#95A5A6"
@@ -59,141 +61,145 @@ def _farbe(v: float) -> str:
 def _panel1_gauges(fig, vollst, artik, gtin, kons, einh):
     kpis = [
         ("Vollständigkeit",       "Pflichtfelder · Grunddaten",  vollst, 1),
-        ("Eindeutigkeit",         "Artikelnummer",               artik,  2),
-        ("Eindeutigkeit",         "GTIN (EAN-13)",               gtin,   3),
+        ("Eindeutigkeit Artikelnummer",         "Artikelnummer · Grunddaten",               artik,  2),
+        ("Eindeutigkeit GTIN",         "GTIN (EAN-13) · Grunddaten",               gtin,   3),
         ("Konsistenz Maße",       "Grunddaten vs. Werksdaten",   kons,   4),
-        ("Konsistenz Maßeinheit", "Mass_Einheit Werksdaten",     einh,   5),
+        ("Konsistenz Maßeinheit", "Maßeinheit · Werksdaten",     einh,   5),
     ]
     for title, sub, wert, col in kpis:
         farbe = _farbe(wert)
         fig.add_trace(go.Indicator(
             mode  = "gauge+number",
             value = round(wert * 100, 1),
-            number = dict(suffix=" %", font=dict(size=24, color=farbe, family=FONT)),
+            number = dict(suffix=" %", valueformat=".1f", font=dict(size=28, color=farbe, family=FONT)),
             title  = dict(
-                text = f"<b>{title}</b><br><span style='font-size:9px;color:{GRAU_TX}'>{sub}</span>",
-                font = dict(size=11, family=FONT, color=DUNKEL),
+                text = f"<b>{title}</b><br><span style='font-size:11px;color:{GRAU_TX}'>{sub}</span>",
+                font = dict(size=13, family=FONT, color=DUNKEL),
             ),
             gauge = dict(
                 axis  = dict(range=[0, 100], ticksuffix="%",
-                             tickfont=dict(size=7, color=GRAU_TX),
+                             tickfont=dict(size=9, color=GRAU_TX),
                              nticks=6),
                 bar   = dict(color=farbe, thickness=0.22),
                 bgcolor = GRAU_BG,
                 borderwidth = 0,
-                threshold = dict(line=dict(color=DUNKEL, width=2),
-                                 thickness=0.75, value=98),   # 98% target line
                 steps = [dict(range=[lo, hi], color=c)
                          for lo, hi, c in _STEP_COLORS],
             ),
         ), row=1, col=col)
 
 
-# ── Panel 2: Preisvalidierung ─────────────────────────────────
+# ── Panel 4: Preisvalidierung ─────────────────────────────────
 
-def _panel2_preis(fig, sentinel, waehrung, valid, gesamt, invalid):
+def _panel4_preis(fig, sentinel, waehrung, valid, gesamt, invalid):
     # invalid = union(sentinel OR wrong_currency) -- groups overlap, do NOT stack them separately
     # correct breakdown: valid(41) + invalid(117) = 158
     segs = [
-        (valid,   GRUEN, f"✓ Gültig: {valid} ({valid/gesamt*100:.0f}%)"),
-        (invalid, ROT,   f"✕ Ungültig: {invalid} ({invalid/gesamt*100:.0f}%)"),
+        (valid,   GRUEN, "Gültig",   f"✓ Gültig: {valid/gesamt*100:.0f}% ({valid})"),
+        (invalid, ROT,  "Ungültig", f"✕ Ungültig: {invalid/gesamt*100:.0f}% ({invalid})"),
     ]
-    cat = [f"{gesamt} Preiseinträge"]
-    for wert, farbe, label in segs:
+    # Use a blank y-label -- the title is shown via annotation above the bar
+    cat = [""]
+    for wert, farbe, sublabel, legend_label in segs:
         hover_detail = (
-            f"  davon Sentinel-Platzhalter: {sentinel}<br>"
-            f"  davon Falsche Währung (CHF/INR): {waehrung}<br>"
+            f"  davon Sentinel-Platzhalter UVP: {sentinel}<br>"
+            f"  davon Falsche Währung: {waehrung}<br>"
             f"  (Gruppen können sich überschneiden)"
             if wert == invalid else ""
         )
         fig.add_trace(go.Bar(
-            name        = label,
+            name        = legend_label,
             x           = [wert],
             y           = cat,
             orientation = "h",
             marker_color = farbe,
-            text        = [f"<b>{wert}</b>  ({wert/gesamt*100:.0f}%)"],
+            # Show count + % on the first line, label on the second
+            text        = [f"<b>{wert/gesamt*100:.0f}%</b> ({wert})<br><i>{sublabel}</i>"],
             textposition = "inside",
             insidetextanchor = "middle",
-            textfont    = dict(color=WEISS, size=12, family=FONT),
-            hovertemplate = f"<b>{label}</b><br>{hover_detail}<extra></extra>",
-            showlegend  = True,
+            textfont    = dict(color=WEISS, size=13, family=FONT),
+            hovertemplate = f"<b>{legend_label}</b><br>{hover_detail}<extra></extra>",
+            showlegend  = False,
             width       = 0.55,
-        ), row=2, col=1)
+        ), row=3, col=1)
 
 
 # ── Panel 3: Maße – zwei gestapelte Balken ────────────────────
 
-def _panel3_masse(fig, konsistent, inkonsistent, einheit_ok, einheit_bug):
-    n_kons = konsistent + inkonsistent
+def _panel3_masse(fig, konsistent, inkonsistent, ausgeschlossen,
+                  einheit_ok, einheit_bug, exakte_dups, konflikte):
+    n_kons = konsistent + inkonsistent + ausgeschlossen
     n_einh = einheit_ok + einheit_bug
 
-    pairs = [
-        # (cat_label, ok_val, bad_val, ok_color, bad_color, ok_hover, bad_hover)
-        (
-            "Konsistenz<br>Grund↔Werk",
-            konsistent, inkonsistent,
-            GRUEN, ROT,
-            f"Konsistent: {konsistent} ({konsistent/n_kons*100:.0f}%)",
-            f"Inkonsistent (>10 %): {inkonsistent} ({inkonsistent/n_kons*100:.0f}%)",
-        ),
-        (
-            "Maßeinheit<br>Werksdaten",
-            einheit_ok, einheit_bug,
-            GRUEN, GELB,
-            f"Korrekt (cm): {einheit_ok} ({einheit_ok/n_einh*100:.0f}%)",
-            f"Fehler 'mm (falsch)': {einheit_bug} ({einheit_bug/n_einh*100:.0f}%)",
-        ),
+    # Label strings defined once — reused in traces, scatter, and categoryarray
+    lbl_kons = f"Konsistenz Maße<br>Grund ↔ Werk" # ({n_kons})"
+    lbl_einh = f"Konsistenz Maßeinheit<br>Werksdaten" # ({n_einh})"
+
+    # ── Bar 1: Konsistenz Grund↔Werk (3 segments) — first → appears LEFT ──
+    GRAU_SEG = "#AEB6BF"
+    segs_kons = [
+        (konsistent,     GRUEN,     f"Konsistent: {konsistent/n_kons*100:.0f}% ({konsistent})"),
+        (inkonsistent,   ROT,      f"Inkonsistent >10%: {inkonsistent/n_kons*100:.0f}% ({inkonsistent})"),
+        (ausgeschlossen, GRAU_SEG, f"Unvergleichbar (NaN-Maße): {ausgeschlossen/n_kons*100:.0f}% ({ausgeschlossen})"),
     ]
-
-    first = True
-    for cat, ok_v, bad_v, ok_c, bad_c, ok_h, bad_h in pairs:
-        total = ok_v + bad_v
+    for val, col, hover in segs_kons:
         fig.add_trace(go.Bar(
-            name         = ok_h,
-            x            = [cat],
-            y            = [ok_v],
-            marker_color = ok_c,
-            text         = [f"<b>{ok_v}</b><br>({ok_v/total*100:.0f}%)"],
+            name         = hover,
+            x            = [lbl_kons],
+            y            = [val],
+            marker_color = col,
+ #           text         = [f"<b>{val}</b><br>({val/n_kons*100:.0f}%)"],
+            text         = [f"<b>{val/n_kons*100:.0f}%</b> ({val})"],
             textposition = "inside",
             insidetextanchor = "middle",
-            textfont     = dict(color=WEISS, size=10, family=FONT),
-            hovertemplate = f"<b>{ok_h}</b><extra></extra>",
-            showlegend   = False,
-        ), row=2, col=4)
-        fig.add_trace(go.Bar(
-            name         = bad_h,
-            x            = [cat],
-            y            = [bad_v],
-            marker_color = bad_c,
-            text         = [f"<b>{bad_v}</b><br>({bad_v/total*100:.0f}%)"],
-            textposition = "inside",
-            insidetextanchor = "middle",
-            textfont     = dict(color=WEISS, size=10, family=FONT),
-            hovertemplate = f"<b>{bad_h}</b><extra></extra>",
+            textfont     = dict(color=WEISS, size=11, family=FONT),
+            hovertemplate = f"<b>{hover}</b><extra></extra>",
             showlegend   = False,
         ), row=2, col=4)
 
+    # ── Bar 2: Konsistenz Maßeinheit Werksdaten (2 segments) — second → appears RIGHT ──
+    segs_einh = [
+        (einheit_ok,  GRUEN,  f"Korrekt (cm): {einheit_ok/n_einh*100:.0f}% ({einheit_ok})"),
+        (einheit_bug, ROT,  f"Fehler 'mm (falsch)': {einheit_bug/n_einh*100:.0f}% ({einheit_bug})"),
+    ]
+    for val, col, hover in segs_einh:
+        fig.add_trace(go.Bar(
+            name         = hover,
+            x            = [lbl_einh],
+            y            = [val],
+            marker_color = col,
+#           text         = [f"<b>{val}</b><br>({val/n_einh*100:.0f}%)"],
+            text         = [f"<b>{val/n_einh*100:.0f}%</b> ({val})"],
+            textposition = "inside",
+            insidetextanchor = "middle",
+            textfont     = dict(color=WEISS, size=11, family=FONT),
+            hovertemplate = f"<b>{hover}</b><extra></extra>",
+            showlegend   = False,
+        ), row=2, col=4)
 
-# ── Panel 4: Referenzintegrität Donut ─────────────────────────
+    return lbl_kons, lbl_einh
 
-def _panel4_ref(fig, ref, verwaist):
+
+# ── Panel 5: Referenzintegrität Donut ─────────────────────────
+
+def _panel5_ref(fig, ref, verwaist):
     total = ref + verwaist
     fig.add_trace(go.Pie(
         labels   = [f"Referenziert ({ref})", f"Phantom-Records ({verwaist})"],
         values   = [ref, verwaist],
         hole     = 0.60,
         marker   = dict(colors=[GRUEN, ROT], line=dict(color=WEISS, width=2)),
-        textinfo = "label+percent",
-        textfont = dict(size=10, family=FONT),
-        hovertemplate = "<b>%{label}</b><br>Anteil: %{percent}<extra></extra>",
+        textinfo = "none",
+        texttemplate = "%{label}<br> %{percent:.0%}",
+        textfont = dict(size=12, family=FONT),
+        hovertemplate = "<b>%{label}</b><br>Anteil: <b>%{percent:.0%}</b><extra></extra>",
         showlegend = False,
-    ), row=3, col=1)
+    ), row=3, col=3)
 
 
-# ── Panel 5: Vollständigkeit per Feld ─────────────────────────
+# ── Panel 2: Vollständigkeit per Feld ─────────────────────────
 
-def _panel5_vollst(fig, df_voll):
+def _panel2_vollst(fig, df_voll):
     df = df_voll[df_voll["feld"] != "_gesamt"].sort_values("vollstaendigkeit")
     farben = [_farbe(v) for v in df["vollstaendigkeit"]]
     fig.add_trace(go.Bar(
@@ -204,10 +210,10 @@ def _panel5_vollst(fig, df_voll):
         text         = [f"{v*100:.1f}%" for v in df["vollstaendigkeit"]],
         textposition = "outside",
         cliponaxis   = False,
-        textfont     = dict(size=9, color=DUNKEL, family=FONT),
+        textfont     = dict(size=11, color=DUNKEL, family=FONT),
         hovertemplate = "<b>%{y}</b>: %{x:.1f}%<extra></extra>",
         showlegend   = False,
-    ), row=3, col=3)
+    ), row=2, col=1)
 
 
 # ── Hauptfunktion ─────────────────────────────────────────────
@@ -231,10 +237,12 @@ def build_dashboard(
     gtin       = float(df_eind[df_eind["feld"] == "GTIN"]["eindeutig_rate"].iloc[0])
     kons       = float(konsistenz_masse_result["konsistent_rate"].iloc[0])
     einh_rate  = float(konsistenz_einheit_result["valid_rate"].iloc[0])
-    kon_n  = int(konsistenz_masse_result["konsistent"].iloc[0])
-    ink_n  = int(konsistenz_masse_result["inkonsistent"].iloc[0])
-    einh_ok  = int(konsistenz_einheit_result["valid"].iloc[0])
-    einh_bug = int(konsistenz_einheit_result["invalid"].iloc[0])
+    kon_n       = int(konsistenz_masse_result["konsistent"].iloc[0])
+    ink_n       = int(konsistenz_masse_result["inkonsistent"].iloc[0])
+    ausgschl_n  = int(konsistenz_masse_result["ausgeschlossen"].iloc[0])
+    einh_ok     = int(konsistenz_einheit_result["valid"].iloc[0])
+    einh_bug    = int(konsistenz_einheit_result["invalid"].iloc[0])
+    exakte_dups = int(werksdaten_konflikte_result["exakte_duplikate"].iloc[0])
     sentinel  = int(preisvalidierung_result["sentinel"].iloc[0])
     invalid_p = int(preisvalidierung_result["invalid_gesamt"].iloc[0])
     waehrung = int(preisvalidierung_result["ungueltige_waehrung"].iloc[0])
@@ -243,7 +251,7 @@ def build_dashboard(
     df_ref   = referenzintegritaet_results["kategorisierung"]
     ref_n    = int(df_ref["referenziert"].iloc[0])
     ver_n    = int(df_ref["verwaist"].iloc[0])
-    wk_konf  = int(werksdaten_konflikte_result["konflikte"].iloc[0])
+    wk_konf     = int(werksdaten_konflikte_result["konflikte"].iloc[0])
 
     # ── Subplots ──────────────────────────────────────────────
     specs = [
@@ -251,8 +259,8 @@ def build_dashboard(
         [{"type": "indicator"}] * 5,
         # Row 2: Panel 2 (colspan=3, left) | Panel 3 (colspan=2, right)
         [{"type": "xy", "colspan": 3}, None, None, {"type": "xy", "colspan": 2}, None],
-        # Row 3: Panel 4 (domain, colspan=2, left) | Panel 5 (xy, colspan=3, right)
-        [{"type": "domain", "colspan": 2}, None, {"type": "xy", "colspan": 3}, None, None],
+        # Row 3: Panel 4 (xy, colspan=2, left) | Panel 5 (domain, colspan=3, right)
+        [{"type": "xy", "colspan": 2}, None, {"type": "domain", "colspan": 3}, None, None],
     ]
 
     fig = make_subplots(
@@ -264,30 +272,67 @@ def build_dashboard(
     )
 
     _panel1_gauges(fig, vollst, artik_rate, gtin, kons, einh_rate)
-    _panel2_preis(fig,  sentinel, waehrung, valid_p, gesamt_p, invalid_p)
-    _panel3_masse(fig,  kon_n, ink_n, einh_ok, einh_bug)
-    _panel4_ref(fig,    ref_n, ver_n)
-    _panel5_vollst(fig, df_voll)
+    _panel4_preis(fig,  sentinel, waehrung, valid_p, gesamt_p, invalid_p)
+    lbl_kons, lbl_einh = _panel3_masse(fig, kon_n, ink_n, ausgschl_n,
+                  einh_ok, einh_bug,
+                  exakte_dups, wk_konf)
+
+    # ── Yellow triangle tooltip for Panel 3 footnote ───────────
+    # Added AFTER bar traces so categoryarray order is respected
+    _n_einh_total = int(konsistenz_einheit_result["valid"].iloc[0]) + int(konsistenz_einheit_result["invalid"].iloc[0])
+    _n_kons_total = kon_n + ink_n + ausgschl_n   # total after dedup/join
+    if _n_einh_total != _n_kons_total:
+        fig.add_trace(go.Scatter(
+            x=[lbl_einh],
+            y=[_n_einh_total * 1.06],
+            mode="markers",
+            marker=dict(
+                symbol="triangle-up",
+                size=16,
+                color="#f7c434",
+                line=dict(color="#D4A017", width=1.5),
+            ),
+            hovertemplate=(
+                f"<b>⚠ Werksdaten-Qualität</b><br>"
+                f"{exakte_dups} exakte Duplikate + {wk_konf} PK-Konflikte<br>"
+                f"entfernt vor Join<br>"
+                f"<br>"
+                f"→ Maßeinheit-Balken: {_n_einh_total} Rohzeilen<br>"
+                f"→ Konsistenz-Balken: {_n_kons_total} nach Bereinigung"
+                f"<extra></extra>"
+            ),
+            showlegend=False,
+        ), row=2, col=4)
+        # "!" text label on top of the triangle
+        fig.add_trace(go.Scatter(
+            x=[lbl_einh],
+            y=[_n_einh_total * 1.06],
+            mode="text",
+            text=["<b>!</b>"],
+            textfont=dict(size=10, color="#5D4000", family=FONT),
+            textposition="middle center",
+            hoverinfo="skip",
+            showlegend=False,
+        ), row=2, col=4)
+    _panel5_ref(fig,    ref_n, ver_n)
+    _panel2_vollst(fig, df_voll)
 
     # ── Achsen ────────────────────────────────────────────────
-    # Panel 2: hide x-axis ticks, keep y-axis clean
-    fig.update_xaxes(showgrid=False, showticklabels=False, row=2, col=1)
-    fig.update_yaxes(showgrid=False, tickfont=dict(size=11), row=2, col=1)
+    # Panel 2: horizontal bars (Vollständigkeit per Feld)
+    fig.update_xaxes(range=[87, 103], showgrid=True, gridcolor=GRAU_LN,
+                     ticksuffix="%", tickfont=dict(size=11), row=2, col=1)
+    fig.update_yaxes(tickfont=dict(size=11), showgrid=False, row=2, col=1)
 
     # Panel 3: vertical grouped bars
-    fig.update_xaxes(showgrid=False, tickfont=dict(size=10), row=2, col=4)
+    fig.update_xaxes(showgrid=False, tickfont=dict(size=12),
+                     categoryorder="array",
+                     categoryarray=[lbl_kons, lbl_einh],
+                     row=2, col=4)
     fig.update_yaxes(showgrid=True, gridcolor=GRAU_LN, row=2, col=4)
 
-    # Panel 5: horizontal bars
-    fig.update_xaxes(range=[87, 103], showgrid=True, gridcolor=GRAU_LN,
-                     ticksuffix="%", tickfont=dict(size=9), row=3, col=3)
-    fig.update_yaxes(tickfont=dict(size=9), showgrid=False, row=3, col=3)
-
-    # 100% reference line Panel 5
-    fig.add_shape(type="line",
-        x0=100, x1=100, y0=0, y1=1,
-        xref="x3", yref="y3 domain",
-        line=dict(color=GRAU_TX, dash="dot", width=1))
+    # Panel 4: Preisvalidierung horizontal bar
+    fig.update_xaxes(showgrid=False, showticklabels=False, row=3, col=1)
+    fig.update_yaxes(showgrid=False, tickfont=dict(size=13), row=3, col=1)
 
     # ── Panel headers (manual annotations, no subplot_titles clash) ─
     # y coords derived from row_heights=[0.26,0.37,0.37], v_spacing=0.14:
@@ -311,10 +356,10 @@ def build_dashboard(
 
     headers = [
         (HEADER_X_COL1, HEADER_Y_ROW1, "① KPI-Scorecard — Kernindikatoren"),
-        (HEADER_X_COL1, HEADER_Y_ROW2, "② Preisvalidierung  →  Kundenservice & Legal"),
+        (HEADER_X_COL1, HEADER_Y_ROW2, "② Vollständigkeit Pflichtfelder  →  Alle Bereiche"),
         (HEADER_X_COL3, HEADER_Y_ROW2, "③ Maße-Konsistenz  →  Logistik"),
-        (HEADER_X_COL1, HEADER_Y_ROW3, "④ Referenzintegrität Kategorisierung  →  Marketing"),
-        (HEADER_X_P5,   HEADER_Y_ROW3, "⑤ Vollständigkeit Pflichtfelder  →  Alle Bereiche"),
+        (HEADER_X_COL1, HEADER_Y_ROW3, "④ Preisvalidierung  →  Kundenservice & Legal"),
+        (HEADER_X_P5,   HEADER_Y_ROW3, "⑤ Referenzintegrität Kategorisierung  →  Marketing"),
     ]
 
     annotations = []
@@ -322,24 +367,33 @@ def build_dashboard(
         annotations.append(dict(
             x=x, y=y, xref="paper", yref="paper",
             text=f"<b>{text}</b>",
-            font=dict(size=11, color=DUNKEL, family=FONT),
+            font=dict(size=13, color=DUNKEL, family=FONT),
             showarrow=False, xanchor="left",
         ))
 
-    # Donut centre label for Panel 4
+    # Panel 4 (Preisvalidierung): title above the bar
     annotations.append(dict(
-        x=0.185, y=0.133,
+        x=0.001, y=HEADER_Y_ROW3 - 0.075,
         xref="paper", yref="paper",
-        text=f"<b style='font-size:15px;color:{ROT}'>{ver_n/( ref_n+ver_n)*100:.0f}%</b>"
-             f"<br><span style='font-size:9px;color:{GRAU_TX}'>Phantome</span>",
+        text=f"{gesamt_p} Preiseinträge",
+        font=dict(size=12, color=DUNKEL, family=FONT),
+        showarrow=False, xanchor="left",
+    ))
+
+    # Donut centre label for Panel 5
+    annotations.append(dict(
+        x=0.71, y=0.133,
+        xref="paper", yref="paper",
+        text=f"<b style='font-size:18px;color:{ROT}'>{ver_n/( ref_n+ver_n)*100:.0f}%</b>"
+             f"<br><span style='font-size:11px;color:{GRAU_TX}'>Phantome</span>",
         showarrow=False, align="center",
+        xanchor="center", yanchor="middle",
     ))
 
 
-    # Horizontal dividers between rows
+    # Horizontal divider between rows 1 and 2
+
     dividers = [
-        dict(type="line", x0=0, x1=1, y0=0.293, y1=0.293,
-             xref="paper", yref="paper", line=dict(color=GRAU_LN, width=1)),
         dict(type="line", x0=0, x1=1, y0=0.699, y1=0.699,
              xref="paper", yref="paper", line=dict(color=GRAU_LN, width=1)),
     ]
@@ -354,11 +408,11 @@ def build_dashboard(
                 # f"Anna Sommani · 13. April 2026</span>"
             ),
             x=0.01, xanchor="left",
-            font=dict(size=19, color=DM_ROT, family=FONT),
+            font=dict(size=22, color=DM_ROT, family=FONT),
         ),
         paper_bgcolor = WEISS,
         plot_bgcolor  = WEISS,
-        font          = dict(family=FONT, color=DUNKEL),
+        font          = dict(family=FONT, color=DUNKEL, size=13),
         height        = 1020,
         margin        = dict(t=105, b=90, l=20, r=20),
         barmode       = "stack",
@@ -369,9 +423,9 @@ def build_dashboard(
             orientation = "h",
             x=0.01, y=-0.06,
             xanchor="left", yanchor="top",
-            font=dict(size=10, family=FONT),
+            font=dict(size=12, family=FONT),
             bgcolor="rgba(0,0,0,0)",
-            title=dict(text="② Legende Preisvalidierung  ", font=dict(size=10, color=GRAU_TX)),
+            title=dict(text="④ Legende Preisvalidierung  ", font=dict(size=12, color=GRAU_TX)),
         ),
     )
 
