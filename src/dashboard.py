@@ -20,7 +20,6 @@ from .utils import get_output_dir
 # ── Design ────────────────────────────────────────────────────
 DM_ROT  = "#CC0033"
 GRUEN   = "#1A9850" #"#27AE60"   # kept for KPI gauge steps only
-BLAU    = "#1A9850" #"#3E94C6"   # valid/korrekt/referenziert in panels 3-5 (neutral positive)
 GELB    = "#f7c434" #"#E8A838"
 ORANGE  = "#FC8D59" #"#DD7647"
 ROT     = "#D73027" #"#D94139"
@@ -342,13 +341,13 @@ def build_dashboard(
     #   row1 bottom: y=0.672+0.14  top: y = 0.812 + 0.26*0.72 = 1.000
     # header y = just above top of each row
 
-    HEADER_Y_ROW1 = 1.035   # above gauge row (inside top margin)
+    HEADER_Y_ROW1 = 1.050 #1.035   # above gauge row (inside top margin)
     HEADER_Y_ROW2 = 0.692
     HEADER_Y_ROW3 = 0.285
 
     # x starts: with h_spacing=0.08, col_width=(1-2*0.08)/3=0.28
     #   col1 x0=0,     col2 x0=0.36,  col3 x0=0.72
-    HEADER_X_COL1 = 0.01
+    HEADER_X_COL1 = 0.00
     HEADER_X_COL3 = 0.64   # Panel 3: col4 of 5-col grid
 
     # Row 3: Panel 5 starts at col2 x0 ≈ 0.36

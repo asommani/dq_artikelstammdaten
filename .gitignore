@@ -1,6 +1,7 @@
 # ─── Vertrauliche Daten und Dokumente ───────────────────────────────────────
 data/raw/
-docs/Recruiting_Aufgabe_Data_Analyst_08_25.pdf
+Recruiting_Aufgabe_Data_Analyst_08_25.pdf
+*.pptx
 
 # ─── Python ─────────────────────────────────────────────────────────────────
 __pycache__/
@@ -9,8 +10,6 @@ __pycache__/
 .vscode/
 .DS_Store
 
-# ─── Streamlit ───────────────────────────────────────────────────────────────
-.streamlit/secrets.toml
 
 # ─── Output files ───────────────────────────────────────────────────────────────
 output/
