@@ -197,24 +197,6 @@ annahmen.md
 
 ---
 
-## Limitations
-
-- 2NF / 3NF cannot be fully automated
-- Some validations require domain knowledge
-- Thresholds are configurable but assumption-based
-
----
-
-## Future Improvements
-
-- Automated data quality monitoring (scheduled runs)
-- CI/CD integration
-- Alerting on KPI thresholds
-- Historical tracking of data quality
-- Integration with BI tools or data warehouse
-
----
-
 ## Language Note
 
 This project was developed for a German case study.  
