@@ -4,7 +4,8 @@ numpy
 pyyaml
 openpyxl
 plotly
+kaleido
 
-# optional: only needed if export.save_png: true in config.yaml
+# Optional: only needed if export.save_png: true for table/image exports in config
 # pip install dataframe_image
 # dataframe_image

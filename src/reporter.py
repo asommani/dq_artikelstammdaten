@@ -8,11 +8,10 @@ Checks pulling in supporting tables (Preise, Kategorisierung, Werksdaten):
 """
 
 import os
-from networkx import config
 import pandas as pd
 
 from .kpi import check_konsistenz_einheit_masse
-from .utils import fehlend_pro_spalte, get_output_dir
+from .utils import get_output_dir
 
 try:
     from IPython.display import display

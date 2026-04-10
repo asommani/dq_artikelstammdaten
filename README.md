@@ -1,7 +1,68 @@
-# Datenqualitätsanalyse – Artikelstammdaten
+# Data Quality Analysis – Article Master Data
 
-A lightweight, extensible data quality framework built in Python.  
-Rules are defined declaratively in YAML — adding a new domain requires no changes to the engine.
+A lightweight, extensible data quality framework built in Python.
+
+The solution is **config-driven**: all business rules are defined declaratively in YAML.  
+Adding new domains or checks requires **no changes to the core engine**.
+
+---
+
+## Overview
+
+This project implements a **scalable and reproducible data quality analysis pipeline** for article master data of a (fictitious) retail company.
+
+It was developed as part of a **Data Analyst / Data Quality Manager case study**.
+
+The pipeline:
+- analyzes multiple data domains
+- computes standardized KPIs
+- detects inconsistencies and data issues
+- generates a dashboard for decision-making
+
+---
+
+## Business Context
+
+Poor data quality has direct operational impact:
+
+- Incorrect product information → **legal risks**
+- Wrong dimensions → **logistics errors**
+- Inconsistent data → **customer complaints and support overhead**
+
+The company lacks a standardized way to measure and monitor data quality.
+
+👉 This project introduces a **repeatable, scalable approach** to data quality management.
+
+---
+
+## Key Features
+
+- Config-driven architecture (`config.yaml`, `rules.yaml`)
+- Automated KPI computation
+- Modular pipeline (overview → KPIs → diagnostics → dashboard)
+- Reproducible outputs
+- Clear separation of logic and business rules
+
+---
+
+## KPIs Implemented
+
+### Completeness
+- Share of required fields without missing values
+
+### Uniqueness
+- Article number uniqueness
+- GTIN uniqueness
+
+### Consistency
+- Dimension comparison (Grunddaten vs. Werksdaten)
+- Unit consistency (e.g. cm vs. mm)
+
+### Additional Checks
+- GTIN format validation
+- Price validation (sentinel values, currency)
+- Reference integrity
+- Plausibility checks (e.g. negative or zero dimensions)
 
 ---
 
@@ -9,36 +70,13 @@ Rules are defined declaratively in YAML — adding a new domain requires no chan
 
 ```
 dq_artikelstammdaten/
-├── .gitignore
-├── README.md
-├── annahmen.md       # Assumptions list
-├── config
-│   ├── config.yaml       # paths, sheet names, export settings
-│   └── rules.yaml        # all business/analysis rules
-├── data
-│   └── raw               # Place input files here (not tracked by git)
-│       └── .gitkeep
-├── diagnostics
-│   └── normalization_analysis.py   # one-time schema audit, exploratory
-├── output
-│   ├── .gitkeep
-│   └── dashboard
-│       ├── dashboard.html # only output already on the repository for visualization
-│       └── dashboard.png
-├── requirements.txt
-├── run_analysis.py       # automated, repeatable: overview + KPIs + dashboard
-└── src
-    ├── __init__.py
-    ├── dashboard.py        # Dashboard
-    ├── kpi.py        # Scalable functions driven by rules.yaml 
-    ├── loader.py       # loads data + both configs
-    ├── normalization.py        # Normalformanalyse
-    ├── overview.py       # Datenüberblick
-    ├── reporter.py       # Extra analysis, mainly domain specific
-    └── utils.py
+├── config/        # configuration & business rules
+├── src/           # modular analysis logic
+├── data/raw/      # input data (not tracked)
+├── output/        # generated results
+├── diagnostics/   # exploratory scripts
+└── run_analysis.py
 ```
-
-
 
 ---
 
@@ -67,61 +105,108 @@ pip install -r requirements.txt
 
 ### 4. Place the input file
 
-- Copy the provided Excel file into `data/raw/`:
-  ```
-  data/raw/Recruiting_Aufgabe_Data_Analyst_08_25.xlsx
-  ```
+Copy the Excel file into:
 
-The raw data is excluded from version control (see `.gitignore`).
+```
+data/raw/Recruiting_Aufgabe_Data_Analyst_08_25.xlsx
+```
+
+The raw data is excluded from version control.
 
 ---
 
 ## Usage
 
-### Run the analysis (CLI)
-
-Produces `output/dq_report.xlsx` and `output/dq_dashboard.png`:
+Run the full analysis pipeline:
 
 ```bash
-python run_analysis.py 
+python run_analysis.py
 ```
 
-### Launch the interactive dashboard
+### Output
 
-```bash
-streamlit run streamlit_app.py
-```
-
-Then open [http://localhost:8501](http://localhost:8501) in your browser.  
-The dashboard is domain-agnostic: use the file picker to load any `output/` folder.
+- KPI results (`.csv`)
+- Interactive dashboard (`.html`)
+- Dashboard export (`.png`)
 
 ---
 
-## Extending to a new domain
+## Configuration
 
-1. Create a new rule config: `config/rules_<domain>.yaml`
-2. Place the corresponding input file in `data/raw/`
-3. Run `run_analysis.py` with the new `--config` and `--data` arguments
-4. The dashboard loads the new results without any code changes
+### `config.yaml`
+Defines:
+- file paths
+- sheet names
+- export settings
+- runtime flags
+
+### `rules.yaml`
+Defines:
+- KPI logic
+- validation rules
+- thresholds
+- controlled vocabularies
+
+👉 This separation allows adapting business rules without changing code.
+
+---
+
+## Extending to a New Domain
+
+1. Modify `config.yaml` and `rules.yaml`
+2. Place new input data in `data/raw/`
+3. Run `run_analysis.py`
+
+The pipeline automatically applies the new rules.
 
 ---
 
 ## Requirements
 
-See `requirements.txt`. Key dependencies:
+See `requirements.txt`.
 
-- `pandas` — data loading and manipulation
-- `openpyxl` — Excel I/O
-- `pyyaml` — YAML config parsing
-- `matplotlib` / `seaborn` — static chart export
-- `streamlit` — interactive dashboard
-- `plotly` — interactive charts within Streamlit
+Core dependencies:
+- pandas
+- numpy
+- PyYAML
+- openpyxl
+- plotly
+- kaleido (required for dashboard PNG export)
+
+Optional:
+- dataframe_image (only for PNG export of tables)
 
 ---
 
-## Notes
+## Assumptions
 
-- Raw data and task documents are intentionally excluded from version control.  
-  See `.gitignore` and the setup instructions above.
-- All assumptions made during the analysis are documented in `docs/assumptions.md`  
-  (to be created during the analysis).
+All assumptions are documented in:
+
+```
+annahmen.md
+```
+
+---
+
+## Limitations
+
+- 2NF / 3NF cannot be fully automated
+- Some validations require domain knowledge
+- Thresholds are configurable but assumption-based
+
+---
+
+## Future Improvements
+
+- Automated data quality monitoring (scheduled runs)
+- CI/CD integration
+- Alerting on KPI thresholds
+- Historical tracking of data quality
+- Integration with BI tools or data warehouse
+
+---
+
+## Language Note
+
+This project was developed for a German case study.  
+Business terminology follows the original dataset (e.g. *Grunddaten*, *Werksdaten*).
