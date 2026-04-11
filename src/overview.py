@@ -150,7 +150,7 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             dpi=int(dpi * 0.5),
             save_png = save_png,
         )
-
+        print(uebersicht)  # Zusätzliche Detailinformationen in der Konsole ausgeben
         # Spalten-Detail
         spalten_detail = compute_spalten_detail(df)
         _export(
@@ -159,7 +159,7 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             dpi=dpi,
             save_png = save_png,
         )
-
+        print(spalten_detail)  # Zusätzliche Detailinformationen in der Konsole ausgeben
         # Head
         _export(
             df.head(10).style.set_caption(f"{table_name} -- erste Zeilen"),

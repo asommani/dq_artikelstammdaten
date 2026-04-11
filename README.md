@@ -45,9 +45,9 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 
 ---
 
-## KPIs Implemented
+## KPIs and Data Quality Analysis 
 
-### Core KPIs 
+### Core KPIs (as defined in the task)
 
 #### Completeness
 - Share of required fields without missing values
@@ -62,14 +62,15 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 - Unit consistency (e.g. cm vs. mm)
 
 ### Additional Data Quality Checks
-
-Beyond the required KPIs, the analysis includes:
-
+#### Supporting Checks (used in the dashboard)
 - Price validation (sentinel values, currency consistency)
 - Reference integrity checks
 - Werksdaten conflict detection 
+
+#### Diagnostics and Additional Analysis (to support findings and recommendations)
+- Flagging function for 1NF atomicity check
 - Plausibility checks on physical measurements (e.g. negative or zero dimensions)
-- Articles without corresponding Werksdaten
+- Detection of articles in Grunddaten without corresponding Werksdaten
 - GTIN format validation (EAN-13)
 - Controlled vocabulary validation
 

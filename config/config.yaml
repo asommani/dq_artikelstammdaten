@@ -26,3 +26,9 @@ export:
 normalization:
   check_1nf: false
 
+extra_checks:
+  plausibilitaet_masse: true
+  gtin_format: true
+  validitaet_vokabular: false
+  artikel_ohne_werksdaten: false
+
