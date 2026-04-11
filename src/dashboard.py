@@ -62,7 +62,7 @@ def _panel1_gauges(fig, vollst, artik, gtin, kons, einh):
         ("Vollständigkeit",       "Pflichtfelder · Grunddaten",  vollst, 1),
         ("Eindeutigkeit Artikelnummer",         "Artikelnummer · Grunddaten",               artik,  2),
         ("Eindeutigkeit GTIN",         "GTIN (EAN-13) · Grunddaten",               gtin,   3),
-        ("Konsistenz Maße",       "Grunddaten vs. Werksdaten",   kons,   4),
+        ("Konsistenz Maße",       "Grunddaten vs. Werksdaten (nur vglb.)",   kons,   4),
         ("Konsistenz Maßeinheit", "Maßeinheit · Werksdaten",     einh,   5),
     ]
     for title, sub, wert, col in kpis:
@@ -131,8 +131,8 @@ def _panel3_masse(fig, konsistent, inkonsistent, ausgeschlossen,
     n_einh = einheit_ok + einheit_bug
 
     # Label strings defined once — reused in traces, scatter, and categoryarray
-    lbl_kons = f"Konsistenz Maße<br>Grund ↔ Werk" # ({n_kons})"
-    lbl_einh = f"Konsistenz Maßeinheit<br>Werksdaten" # ({n_einh})"
+    lbl_kons = f"Konsistenz Maße (auch unvglb.)<br>Grund ↔ Werk" # ({n_kons})"
+    lbl_einh = f"Konsistenz Maßeinheit <br>Werksdaten" # ({n_einh})"
 
     # ── Bar 1: Konsistenz Grund↔Werk (3 segments) — first → appears LEFT ──
     GRAU_SEG = "#AEB6BF"
@@ -356,7 +356,7 @@ def build_dashboard(
     headers = [
         (HEADER_X_COL1, HEADER_Y_ROW1, "① KPI-Scorecard — Kernindikatoren"),
         (HEADER_X_COL1, HEADER_Y_ROW2, "② Vollständigkeit Pflichtfelder  →  Alle Bereiche"),
-        (HEADER_X_COL3, HEADER_Y_ROW2, "③ Maße-Konsistenz  →  Logistik"),
+        (HEADER_X_COL3, HEADER_Y_ROW2, "③ Maßkonsistenz & Werksdatenqualität  →  Logistik"),
         (HEADER_X_COL1, HEADER_Y_ROW3, "④ Preisvalidierung  →  Kundenservice & Legal"),
         (HEADER_X_P5,   HEADER_Y_ROW3, "⑤ Referenzintegrität Kategorisierung  →  Marketing"),
     ]

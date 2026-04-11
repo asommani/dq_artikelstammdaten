@@ -41,7 +41,9 @@ def check_plausibilitaet_masse(
         spalten = check["spalten"]
 
         mask_null        = df[spalten].isnull().any(axis=1)
-        mask_implausibel = (~mask_null) & (df[spalten] <= 0).any(axis=1)
+        mask_implausibel = (~mask_null) & (df[spalten] <= 0).any(axis=1) 
+        # to do in future: add values > 1000 as implausible for weight and dimensions
+
 
         n_gesamt      = len(df)
         n_null        = int(mask_null.sum())
