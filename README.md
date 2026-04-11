@@ -57,9 +57,8 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 - GTIN uniqueness
 
 #### Consistency
-- Dimension comparison (Grunddaten vs. Werksdaten)
-- Deviation > 10% classified as inconsistent
-- Unit consistency (e.g. cm vs. mm)
+- Consistency of dimensions based on comparison between Grunddaten and Werksdaten (deviation > 10% classified as inconsistent)
+- Unit consistency of dimensions
 
 ### Additional Data Quality Checks
 #### Supporting Checks (used in the dashboard)

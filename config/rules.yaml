@@ -48,8 +48,7 @@ gueltige_werte:
     - Nein
   waehrung:
     - EUR
-    # - CZK
-    # - PLN
+
   mass_einheit:
     - cm
   kategorie:
@@ -109,6 +108,7 @@ gtin_check:
   tabelle: artikeldaten_grunddaten
   spalte:  GTIN
   laenge:  13
+  sentinel_werte: [9999999999999]
 
 validitaet_vokabular:
 - tabelle: artikeldaten_grunddaten

@@ -32,11 +32,11 @@ from src.kpi import (
 from src.reporter import (
     run_plausibilitaet_masse,
     run_gtin_format,
-    run_validitaet_vokabular,
     run_preisvalidierung,
     run_referenzintegritaet,
     run_werksdaten_konflikte,
-    run_artikel_ohne_werksdaten
+    run_artikel_ohne_werksdaten,
+    run_validitaet_vokabular,
 )
 
 from src.dashboard import run_dashboard

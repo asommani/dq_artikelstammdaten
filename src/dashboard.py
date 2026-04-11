@@ -184,7 +184,7 @@ def _panel3_masse(fig, konsistent, inkonsistent, ausgeschlossen,
 def _panel5_ref(fig, ref, verwaist):
     total = ref + verwaist
     fig.add_trace(go.Pie(
-        labels   = [f"Referenziert ({ref})", f"Phantom-Records ({verwaist})"],
+        labels   = [f"Referenziert ({ref})", f"Orphan Records ({verwaist})"],
         values   = [ref, verwaist],
         hole     = 0.60,
         marker   = dict(colors=[GRUEN, ROT], line=dict(color=WEISS, width=2)),
@@ -384,7 +384,7 @@ def build_dashboard(
         x=0.71, y=0.133,
         xref="paper", yref="paper",
         text=f"<b style='font-size:18px;color:{ROT}'>{ver_n/( ref_n+ver_n)*100:.0f}%</b>"
-             f"<br><span style='font-size:11px;color:{GRAU_TX}'>Phantome</span>",
+             f"<br><span style='font-size:11px;color:{GRAU_TX}'>Orphans</span>",
         showarrow=False, align="center",
         xanchor="center", yanchor="middle",
     ))

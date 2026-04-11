@@ -107,26 +107,35 @@ def check_gtin_format(
     df     = tabellen[gtin_check["tabelle"]]
     spalte = gtin_check["spalte"]
     laenge = gtin_check["laenge"]
+    sentinel_werte = set(gtin_check.get("sentinel_werte", []))
 
     col       = df[spalte].dropna()
     n_gesamt  = len(df)
     n_fehlend = int(df[spalte].isnull().sum())
 
-    gtin_str     = col.astype(int).astype(str)
+    col_int       = col.astype(int)
+    mask_sentinel = col_int.isin(sentinel_werte)
+    n_sentinel    = int(mask_sentinel.sum())
+
+    gtin_str     = col_int[~mask_sentinel].astype(str).str.zfill(laenge)
     mask_invalid = gtin_str.str.len() != laenge
     n_invalid    = int(mask_invalid.sum())
-    n_valid      = n_gesamt - n_fehlend - n_invalid
+    n_valid      = n_gesamt - n_fehlend - n_sentinel - n_invalid
 
     return pd.DataFrame([{
-        "tabelle":      gtin_check["tabelle"],
-        "spalte":       spalte,
-        "gesamt":       n_gesamt,
-        "fehlend":      n_fehlend,
-        "valid":        n_valid,
-        "valid_rate":   n_valid   / n_gesamt if n_gesamt > 0 else None,
-        "invalid":      n_invalid,
-        "invalid_rate": n_invalid / n_gesamt if n_gesamt > 0 else None,
+        "tabelle":             gtin_check["tabelle"],
+        "spalte":              spalte,
+        "gesamt":              n_gesamt,
+        "fehlend":             n_fehlend,
+        "sentinel":            n_sentinel,
+        "format_invalid":      n_invalid,
+        "format_invalid_rate": n_invalid / n_gesamt if n_gesamt > 0 else None,
+        "tot_invalid":         n_invalid + n_sentinel,
+        "tot_invalid_rate":    (n_invalid + n_sentinel) / n_gesamt if n_gesamt > 0 else None,
+        "valid":               n_valid,
+        "valid_rate":          n_valid / n_gesamt if n_gesamt > 0 else None,
     }])
+
 
 def _style_gtin_format(df_result: pd.DataFrame) -> pd.Styler:
     return (
@@ -134,8 +143,9 @@ def _style_gtin_format(df_result: pd.DataFrame) -> pd.Styler:
         .hide(axis="index")
         .set_caption("GTIN – EAN-13 Formatprüfung")
         .format({
-            "valid_rate":   "{:.1%}",
-            "invalid_rate": "{:.1%}",
+            "format_invalid_rate": "{:.1%}",
+            "tot_invalid_rate":    "{:.1%}",
+            "valid_rate":          "{:.1%}",
         })
     )
 
@@ -155,7 +165,7 @@ def run_gtin_format(tabellen: dict, rules: dict, config: dict, run_dir: str) -> 
     print(f"  Gespeichert: {os.path.basename(csv_path)}")
 
     # PNG
-    styled   = _style_gtin_format(result)
+    styled = _style_gtin_format(result)
     if config.get("export", {}).get("save_png", False) and dfi is not None:
         png_path = os.path.join(output_dir, "gtin_format.png")
         dfi.export(styled, png_path, table_conversion="matplotlib", dpi=dpi)
@@ -165,6 +175,9 @@ def run_gtin_format(tabellen: dict, rules: dict, config: dict, run_dir: str) -> 
         display(styled)
 
     return result
+
+# ── Vokabular ─────────────────────────────
+
 
 def run_validitaet_vokabular(tabellen: dict, rules: dict, config: dict, run_dir: str) -> pd.DataFrame:
     output_dir = get_output_dir(run_dir, "reporter")
