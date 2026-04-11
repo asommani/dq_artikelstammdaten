@@ -135,12 +135,11 @@ This distinction is important: exact duplicates are a data management failure (e
 
 ## 11. Plausibilitätscheck Maße (Dimension Plausibility)
 
-**Rule:** Any dimension value (Länge, Breite, Höhe) that is `<= 0` is classified as implausible. This applies to both Grunddaten and Werksdaten dimension columns.
+**Rule:** A row is classified as implausible if any dimension value (Länge, Breite, Höhe) is `<= 0` (lower bound) or exceeds the threshold defined in `rules.yaml → plausibilitaet_masse.implausibel_max` (upper bound, stored in output column `impl_max_threshold`). Both checks are applied to Grunddaten and Werksdaten dimension columns. The two violation types are reported separately as `impl_min_n` (count of `<= 0` violations) and `impl_max_n` (count of `> impl_max_threshold` violations); a row flagged by either condition counts as one implausible row in `tot_implausibel` (no double-counting).
 
-**Null handling:** Rows with any `NaN` dimension value are first excluded from the implausibility check (reported as `fehlend`). Only non-null rows are evaluated for the `<= 0` condition.
+**Null handling:** Rows with any `NaN` dimension value are first excluded from the implausibility check (reported as `fehlend`). Only non-null rows are evaluated for the `<= 0` and `> impl_max_threshold` conditions.
 
-**Rate denominator:** `implausibel_rate` and `plausibel_rate` use `n_gesamt` (total rows) as denominator.
-
+**Rate denominator:** `tot_implausibel_rate` and `plausibel_rate` use `n_gesamt` (total rows) as denominator.
 ---
 
 ## 12. GTIN / EAN-13 Format Check

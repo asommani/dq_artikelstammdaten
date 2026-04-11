@@ -29,6 +29,6 @@ normalization:
 extra_checks:
   plausibilitaet_masse: true
   gtin_format: true
-  validitaet_vokabular: false
-  artikel_ohne_werksdaten: false
+  validitaet_vokabular: true
+  artikel_ohne_werksdaten: true
 

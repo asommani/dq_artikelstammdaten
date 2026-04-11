@@ -101,8 +101,11 @@ konsistenz_einheit_masse:
 plausibilitaet_masse:
   - tabelle: artikeldaten_grunddaten
     spalten: [Laenge_cm, Breite_cm, Hoehe_cm]
+    implausibel_max: 200
   - tabelle: werksdaten
     spalten: [Laenge_cm_werk, Breite_cm_werk, Hoehe_cm_werk]
+    implausibel_max: 200
+
 
 gtin_check:
   tabelle: artikeldaten_grunddaten

@@ -39,11 +39,16 @@ def check_plausibilitaet_masse(
     for check in checks:
         df      = tabellen[check["tabelle"]]
         spalten = check["spalten"]
+        max_val = check.get("implausibel_max")   # None if not set
 
         mask_null        = df[spalten].isnull().any(axis=1)
-        mask_implausibel = (~mask_null) & (df[spalten] <= 0).any(axis=1) 
-        # to do in future: add values > 1000 as implausible for weight and dimensions
 
+        mask_too_low  = (~mask_null) & (df[spalten] <= 0).any(axis=1)
+        mask_too_high = (
+            (~mask_null) & (df[spalten] > max_val).any(axis=1)
+            if max_val is not None else pd.Series(False, index=df.index)
+        )
+        mask_implausibel = mask_too_low | mask_too_high
 
         n_gesamt      = len(df)
         n_null        = int(mask_null.sum())
@@ -51,17 +56,19 @@ def check_plausibilitaet_masse(
         n_plausibel   = n_gesamt - n_null - n_implausibel
 
         rows.append({
-            "tabelle":        check["tabelle"],
-            "spalten":        ", ".join(spalten),
-            "gesamt":         n_gesamt,
-            "fehlend":        n_null,
-            "implausibel":    n_implausibel,
-            "implausibel_rate": n_implausibel / n_gesamt if n_gesamt > 0 else None,
-            "plausibel":      n_plausibel,
-            "plausibel_rate": n_plausibel / n_gesamt if n_gesamt > 0 else None,
+            "tabelle":           check["tabelle"],
+            "spalten":           ", ".join(spalten),
+            "impl_max_threshold":   max_val,
+            "gesamt":            n_gesamt,
+            "fehlend":           n_null,
+            "impl_min_n":   int(mask_too_low.sum()),
+            "impl_max_n": int(mask_too_high.sum()),
+            "tot_implausibel":       n_implausibel,
+            "tot_implausibel_rate":  n_implausibel / n_gesamt if n_gesamt > 0 else None,
+            "plausibel":         n_plausibel,
+            "plausibel_rate":    n_plausibel / n_gesamt if n_gesamt > 0 else None,
         })
     return pd.DataFrame(rows)
-
 
 def _style_plausibilitaet_masse(df_result: pd.DataFrame) -> pd.Styler:
     return (

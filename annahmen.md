@@ -134,14 +134,13 @@ Diese Unterscheidung ist wesentlich: Exakte Duplikate sind ein Fehler im Data Ma
 **Auflösungsstrategie im Konsistenz-KPI:** Wenn die Werksdaten Konflikte enthalten, wird für die Konsistenzprüfung der Maße die erste Vorkommens nach Entfernung exakter Duplikate verwendet. Es wird kein Versuch unternommen zu bestimmen, welcher der konfligierenden Werte „korrekt“ ist, da dies Domänenwissen erfordert. Auffällig ist, dass in allen drei Konfliktfällen die Dimensionsspalten (`Laenge_cm_werk`, `Breite_cm_werk`, `Hoehe_cm_werk`) identisch sind, sodass diese Konflikte keinen Einfluss auf das Ergebnis des Konsistenz Maße KPI haben.
 
 ---
-
 ## 11. Plausibilitätscheck Maße (Dimension Plausibility)
 
-**Regel:** Jeder Dimensionswert (Länge, Breite, Höhe), der `<= 0` ist, wird als implausibel klassifiziert. Dies gilt sowohl für die Dimensionsspalten in den Grunddaten als auch in den Werksdaten.
+**Regel:** Eine Zeile wird als implausibel klassifiziert, wenn ein Maßwert (Länge, Breite, Höhe) `<= 0` ist (Untergrenze) oder den in `rules.yaml → plausibilitaet_masse.implausibel_max` definierten Schwellenwert überschreitet (Obergrenze, gespeichert in der Ausgabespalte `impl_max_threshold`). Beide Prüfungen werden auf die Maßspalten der Grunddaten und Werksdaten angewendet. Die beiden Verletzungstypen werden separat ausgewiesen als `impl_min_n` (Anzahl `<= 0`-Verletzungen) und `impl_max_n` (Anzahl `> impl_max_threshold`-Verletzungen); eine Zeile, die durch eine der beiden Bedingungen geflagt wird, zählt als eine implausible Zeile in `tot_implausibel` (keine Doppelzählung).
 
-**Umgang mit Nullwerten:** Zeilen, in denen mindestens ein Dimensionswert `NaN` ist, werden zunächst vom Plausibilitätscheck ausgeschlossen und als `fehlend` ausgewiesen. Nur Zeilen ohne Nullwerte werden auf die Bedingung `<= 0` geprüft.
+**Behandlung fehlender Werte:** Zeilen mit einem `NaN`-Maßwert werden zunächst von der Plausibilitätsprüfung ausgeschlossen (als `fehlend` ausgewiesen). Nur Nicht-Null-Zeilen werden auf die Bedingungen `<= 0` und `> impl_max_threshold` geprüft.
 
-**Nenner der Rate:** Sowohl `implausibel_rate` als auch `plausibel_rate` verwenden `n_gesamt` (Gesamtanzahl der Zeilen) als Nenner.
+**Nenner der Rate:** `tot_implausibel_rate` und `plausibel_rate` verwenden `n_gesamt` (Gesamtanzahl Zeilen) als Nenner.
 
 ---
 ## 12. GTIN / EAN-13 Formatprüfung
