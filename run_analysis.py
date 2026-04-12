@@ -43,7 +43,6 @@ from src.dashboard import run_dashboard
 
 def main():
 
-    # Timestamped output folder -- created once, passed to all modules
     run_dir = get_run_output_dir(project_dir)
 
     config   = load_config(project_dir)
@@ -59,7 +58,7 @@ def main():
 #%%
     # Aufgabe 1: Datenueberblick
     print("\n" + "=" * 60)
-    print("Aufgabe 1: Datenueberblick") # # Nur in Notebook, sonst export als PNG wenn save_png True in config
+    print("Aufgabe 1: Datenueberblick") 
     print("=" * 60) 
 
     run_overview(tabellen, config, run_dir)
@@ -107,7 +106,6 @@ def main():
     if config.get("extra_checks", {}).get("artikel_ohne_werksdaten"):
         artikel_ohne_werksdaten = run_artikel_ohne_werksdaten(tabellen, rules, config, run_dir)
         
-
 
 #%%
     # Aufgabe 3: Dashboard 
