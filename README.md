@@ -79,11 +79,12 @@ This project introduces a **repeatable, scalable approach** to data quality mana
 
 ```
 dq_artikelstammdaten/
-├── config/        # configuration & business rules
-├── src/           # modular analysis logic
-├── data/raw/      # input data (not tracked)
-├── output/        # generated results
-├── diagnostics/   # exploratory scripts
+├── config/          # configuration & business rules
+├── src/             # modular analysis logic
+├── data/raw/        # input data (not tracked)
+├── output/          # generated results (CSVs, dashboard)
+├── docs/            # dashboard copy for GitHub Pages hosting
+├── diagnostics/     # exploratory scripts
 └── run_analysis.py
 ```
 
@@ -132,13 +133,22 @@ Run the full analysis pipeline:
 python run_analysis.py
 ```
 
-### Output
+## Output
 
 - KPI results (`.csv`)
 - Interactive dashboard (`.html`)
 - Dashboard export (`.png`)
 
 ---
+
+## Dashboard Preview
+🔗 [View interactive dashboard](https://asommani.github.io/dq_artikelstammdaten/)
+
+![Dashboard](output/dashboard/dashboard.png)
+
+---
+
+
 
 ## Configuration
 
