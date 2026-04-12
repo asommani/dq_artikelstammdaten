@@ -1,6 +1,6 @@
 #%%
 """
-run_analysis.py --Einstiegspunkt fuer die Datenqualitaetsanalyse.
+run_analysis.py -- Einstiegspunkt fuer die Datenqualitaetsanalyse.
 
 Aufruf:
     python run_analysis.py
@@ -14,7 +14,7 @@ Fuehrt alle Aufgaben sequenziell aus:
 import os
 
 
-# run_analysis.py lives in the project root, so __file__ gives us the root directly.
+# Run_analysis.py lives in the project root, so __file__ gives us the root directly.
 project_dir = os.path.dirname(os.path.abspath(__file__))
 
 from src.loader import load_config, load_rules, load_tabellen
@@ -62,7 +62,8 @@ def main():
     print("=" * 60) 
 
     run_overview(tabellen, config, run_dir)
-    # boolean flag for 1nf yer o not (in config)
+    
+    # Boolean flag for 1nf yes or not (in config)
     if config.get("normalization", {}).get("check_1nf"):
         print("\n" + "=" * 60)
         print("Aufgabe 1b: 1NF-Atomicity Check")
@@ -85,15 +86,14 @@ def main():
     print("Aufgabe 3: Auswertung, Empfehlung und Dashboard")
     print("=" * 60)
 
-    # supporting information for dashboard
-
+    # Supporting information for dashboard
     print(" -- Berechnung von extra KPIs für die Dashboard -- ")
     print("=" * 60)
     preisvalidierung = run_preisvalidierung(tabellen, rules, config, run_dir)
     referenzintegritaet = run_referenzintegritaet(tabellen, rules, config, run_dir)
     werksdaten_konflikte = run_werksdaten_konflikte(tabellen, rules, config, run_dir)
 
-    # further analysis for Auswertung und Empfehlung discussion
+    # Further analysis for Auswertung und Empfehlung discussion
     print("\n" + "=" * 60)
     print(" -- Weitere Analysen für die Auswertung und Empfehlung Diskussion -- ")
     print("=" * 60)
@@ -124,8 +124,6 @@ def main():
         config  = config,
         run_dir = run_dir,
     )
-
-
 
     print("\nFertig.")
 #%%

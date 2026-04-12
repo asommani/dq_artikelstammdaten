@@ -37,6 +37,7 @@ gueltige_werte:
     - g
     - ml
     - kg
+    - l
   temperaturzone:
     - Ambient
     - Kuehl
@@ -50,22 +51,6 @@ gueltige_werte:
     - EUR
   mass_einheit:
     - cm
-  kategorie:
-    - Backwaren
-    - Fleisch & Wurst
-    - Frühstücksartikel
-    - Getränke        # standardised form
-    - Gewürze & Saucen
-    - Molkereiprodukte
-    - Non-Food
-    - Obst & Gemüse
-    - Snacks
-    - Süßwaren
-    - Teigwaren & Reis
-    - Tiefkühlkost    # standardised form
-    - Frischware
-    - Trockenware  
-    
 
 # # ── Konsistenz KPIs ────────────────────────────────────────────
 konsistenz_masse:
