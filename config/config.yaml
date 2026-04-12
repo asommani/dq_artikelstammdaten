@@ -4,7 +4,7 @@ projekt:
   autor: Anna Sommani
 # ── Datei ────────────────────────────────────────────────────
 datei:
-  filename: "Recruiting_Aufgabe_Data_Analyst_08_25.xlsx"
+  filename: "dq_artikelstammdaten.xlsx"
 
 # ── Tabellenblatter ──────────────────────────────────────────
 # key: Python-Variable, value: Excel-Blattname

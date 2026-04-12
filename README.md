@@ -117,7 +117,7 @@ pip install -r requirements.txt
 Copy the Excel file into:
 
 ```
-data/raw/Recruiting_Aufgabe_Data_Analyst_08_25.xlsx
+data/raw/<filename>.xlsx
 ```
 
 The raw data is excluded from version control.
