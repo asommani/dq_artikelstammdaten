@@ -187,9 +187,10 @@ Optional:
 
 ---
 
-## Assumptions
+## Documentation and assumtions
 
-All assumptions are documented in:
+All assumptions made during the analysis, as well as the methodological decisions and rationale behind key design choices are documented in:
+
 
 ```
 annahmen.md
