@@ -131,7 +131,7 @@ def _panel3_masse(fig, konsistent, inkonsistent, ausgeschlossen,
     n_einh = einheit_ok + einheit_bug
 
     # Label strings defined once — reused in traces, scatter, and categoryarray
-    lbl_kons = f"Konsistenz Maße (auch unvglb.)<br>Grund ↔ Werk" # ({n_kons})"
+    lbl_kons = f"Konsistenz Maße (auch nicht vglb.)<br>Grund ↔ Werk" # ({n_kons})"
     lbl_einh = f"Konsistenz Maßeinheit <br>Werksdaten" # ({n_einh})"
 
     # ── Bar 1: Konsistenz Grund↔Werk (3 segments) — first → appears LEFT ──
