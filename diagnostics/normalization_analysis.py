@@ -18,6 +18,8 @@ rules = load_rules(project_dir)
 tabellen = load_tabellen(config, project_dir)
 
 print(f"Output:  {run_dir}") 
+
+#tabellen[list(tabellen.keys())[0]].columns
 #%% ============= 1NF Check ================
 run_1nf_check(tabellen, rules, run_dir)
 

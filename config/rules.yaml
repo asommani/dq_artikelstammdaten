@@ -48,7 +48,6 @@ gueltige_werte:
     - Nein
   waehrung:
     - EUR
-
   mass_einheit:
     - cm
   kategorie:
