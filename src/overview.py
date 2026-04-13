@@ -13,7 +13,6 @@ Computation and rendering are separated:
 
 import os
 import pandas as pd
-import dataframe_image as dfi
 from .utils import fehlend_pro_spalte, get_output_dir
 # display() only if running in a notebook
 try:
@@ -159,7 +158,10 @@ def run_overview(tabellen: dict, config: dict, run_dir: str) -> None:
             dpi=dpi,
             save_png = save_png,
         )
+
+        spalten_detail.to_csv(os.path.join(output_dir, f"{var_name}_spalten_detail.csv"), index=False)
         print(spalten_detail)  # Zusätzliche Detailinformationen in der Konsole ausgeben
+        print(f"  Gespeichert: {var_name}_spalten_detail.csv")
         # Head
         _export(
             df.head(10).style.set_caption(f"{table_name} -- erste Zeilen"),

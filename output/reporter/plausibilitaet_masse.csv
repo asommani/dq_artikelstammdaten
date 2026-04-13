@@ -1,0 +1,3 @@
+tabelle,spalten,impl_max_threshold,gesamt,fehlend,impl_min_n,impl_max_n,tot_implausibel,tot_implausibel_rate,plausibel,plausibel_rate
+artikeldaten_grunddaten,"Laenge_cm, Breite_cm, Hoehe_cm",200,147,7,21,10,31,0.2108843537414966,109,0.7414965986394558
+werksdaten,"Laenge_cm_werk, Breite_cm_werk, Hoehe_cm_werk",200,289,42,0,15,15,0.05190311418685121,232,0.8027681660899654

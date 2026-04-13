@@ -1,11 +1,9 @@
-# core
+# pip install -r requirements.txt
 pandas
 numpy
 pyyaml
 openpyxl
 plotly
 kaleido
+dataframe_image
 
-# Optional: only needed if export.save_png: true for table/image exports in config
-# pip install dataframe_image
-# dataframe_image
