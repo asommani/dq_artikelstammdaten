@@ -195,7 +195,7 @@ See `requirements.txt`.
 
 ---
 
-## Documentation and assumtions
+## Documentation and assumptions
 
 All assumptions made during the analysis, as well as the methodological decisions and rationale behind key design choices are documented in:
 
