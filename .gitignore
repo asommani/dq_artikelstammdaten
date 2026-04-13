@@ -3,7 +3,9 @@ data/raw/*
 !data/raw/.gitkeep
 *.pdf
 *.pptx
-
+dm_pres_dashboard.html
+README_with_dash.md
+docs/*
 # ─── Python ─────────────────────────────────────────────────────────────────
 __pycache__/
 
@@ -11,14 +13,13 @@ __pycache__/
 .vscode/
 .DS_Store
 
-
 # ─── Output files ───────────────────────────────────────────────────────────────
-#output/*
-#!output/.gitkeep
-output/**/*.png
-output/*.png
-output/normalisierungsanalyse/
-output/reporter/
-!output/dashboard/dashboard.html
-!output/dashboard/dashboard.png
+output/*
+!output/.gitkeep
+# output/**/*.png
+# output/*.png
+# output/normalisierungsanalyse/
+# output/reporter/werksdaten_konflikte_detail.csv 
+# !output/dashboard/dashboard.html
+# !output/dashboard/dashboard.png
 
