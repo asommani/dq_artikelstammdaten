@@ -102,7 +102,11 @@ print()
 combos = [
     ["Artikelnummer"],
     ["Artikelnummer", "Werk"],
-    ["Artikelnummer", "Werk", "Lagerort"]
+    ["Artikelnummer", "Werk", "Lagerort"],
+    ["Artikelnummer", "Werk", "Disponent"],
+    ["Artikelnummer", "Werk", "Lagerort", "Disponent"],
+    ["Artikelnummer", "Werk", "Lieferant_ID"], #meaningless, because Lieferant_ID is not functionally dependent on Artikelnummer + Werk
+    ["Artikelnummer", "Werk", "Lieferant_ID","Status"], # meaningless because Lieferant_ID and Status are not functionally dependent on Artikelnummer + Werk
 ]
 for cols in combos:
     dups = df.duplicated(subset=cols).sum()

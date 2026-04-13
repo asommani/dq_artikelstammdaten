@@ -108,7 +108,9 @@ Daraus folgt, dass der KPI ausschließlich auf `Mass_Einheit` in den Werksdaten 
 
 **Kategorisierung ungültiger Werte:** Sentinel-Werte, Preise außerhalb des gültigen Bereichs sowie ungültige Währungen werden als separate Masken-Kategorien erkannt und zu einer gemeinsamen `mask_invalid` zusammengeführt. Ein Preis wird dabei nur einmal gezählt, auch wenn er in mehrere Kategorien fällt (Union-Semantik).
 
-**Gültige Währungen:** Als gültige Währung ist ausschließlich `EUR` definiert (`rules.yaml → gueltige_werte.waehrung`). Andere im Datensatz vorkommende Währungen werden als ungültig markiert. dm-drogerie markt ist in 14 europäischen Märkten tätig, jeweils mit potenziell unterschiedlichen lokalen Währungen. Da die Aufgabenstellung jedoch keine Multi-Währungslogik spezifiziert, wird `EUR` als einzige gültige Währung für diesen Datensatz angenommen. Zusätzlich lassen sich die konkret im Datensatz gefundenen ungültigen Währungen auch operativ ausschließen: dm ist weder in der Schweiz noch in Indien tätig, wodurch `CHF` und `INR` unabhängig von einer allgemeinen Währungspolitik als ungültig gelten.
+
+**Gültige Währungen:** `EUR` und `CHF` sind als gültige Währungen definiert (`rules.yaml → gueltige_werte.waehrung`). Da die Aufgabenstellung ein fiktives Unternehmen beschreibt ohne explizite Marktangabe, wird angenommen, dass das Unternehmen im DACH-Raum (Deutschland, Österreich, Schweiz) operiert, damit sind sowohl EUR als auch CHF plausibel. `INR` (Indische Rupie) wird als ungültig klassifiziert, da Indien kein plausibler Markt für ein DACH-Unternehmen ist. Diese Annahme wird hier dokumentiert, da sie die Anzahl der ungültigen Währungseinträge beeinflusst: 13 INR-Einträge werden als ungültig klassifiziert (zuvor 32, als nur EUR als gültig angenommen wurde).
+
 
 ---
 ## 9. Referenzintegrität (Referential Integrity)

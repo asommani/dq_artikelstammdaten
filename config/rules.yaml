@@ -49,6 +49,7 @@ gueltige_werte:
     - Nein
   waehrung:
     - EUR
+    - CHF
   mass_einheit:
     - cm
 

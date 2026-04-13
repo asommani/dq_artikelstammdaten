@@ -106,7 +106,7 @@ As a result, the KPI is computed exclusively on `Mass_Einheit` in Werksdaten, wi
 
 **Invalid categorization:** Sentinel values, out-of-range prices, and invalid currencies are detected as separate mask categories and combined into a single `mask_invalid`. A price can only be counted once even if it falls into multiple categories (union semantics).
 
-**Valid currencies:** Only `EUR` is listed as a valid currency (`rules.yaml → gueltige_werte.waehrung`). Other currencies found in the data are flagged as invalid. dm-drogerie markt operates in 14 European markets, each with potentially different local currencies. However, since the task brief provides no multi-currency specification, `EUR` is assumed to be the only valid currency for this dataset. Additionally, the specific invalid currencies found in the data can be ruled out on operational grounds: dm does not operate in Switzerland or India, making `CHF` and `INR` invalid regardless of any broader currency policy.
+**Valid currencies:** `EUR` and `CHF` are listed as valid currencies (`rules.yaml → gueltige_werte.waehrung`). Since the task describes a fictitious retailer with no explicit market specification, it is assumed the company operates in the DACH region (Germany, Austria, Switzerland), making both EUR and CHF plausible. INR (Indian Rupee) is flagged as invalid as India is not a plausible market for a DACH-based retailer. This assumption is documented here as it affects the invalid currency count: 13 INR entries are flagged as invalid (previously 32 when only EUR was accepted)."
 
 ---
 
