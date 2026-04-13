@@ -1,2 +1,0 @@
-tabelle,spalte,gueltig,gesamt,fehlend,valid,valid_rate,invalid,invalid_rate,vorhandene_werte,invalid_werte,einheitlich
-werksdaten,Mass_Einheit,cm,289,0,274,0.9480968858131488,15,0.05190311418685121,"{'cm': 274, 'mm (falsch)': 15}",['mm (falsch)'],False

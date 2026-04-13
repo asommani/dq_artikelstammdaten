@@ -1,9 +1,0 @@
-Spalte,Datentyp,Fehlend,% Fehlend,Eindeutige Werte,% Eindeutig
-Lieferant_ID,int64,0,0.00%,22,100.00%
-Lieferantenname,object,0,0.00%,20,90.91%
-Adresse,object,0,0.00%,21,95.45%
-Kontaktperson,object,0,0.00%,15,68.18%
-Telefon,object,0,0.00%,20,90.91%
-Biozertifiziert,object,2,9.09%,2,9.09%
-Land,object,0,0.00%,3,13.64%
-Status,object,0,0.00%,2,9.09%

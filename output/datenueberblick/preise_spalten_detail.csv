@@ -1,6 +1,0 @@
-Spalte,Datentyp,Fehlend,% Fehlend,Eindeutige Werte,% Eindeutig
-Artikelnummer,object,0,0.00%,94,59.49%
-UVP,float64,0,0.00%,3,1.90%
-Währung,object,0,0.00%,3,1.90%
-Gültig_ab,datetime64[ns],0,0.00%,158,100.00%
-Gültig_bis,datetime64[ns],0,0.00%,158,100.00%

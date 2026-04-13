@@ -1,7 +1,0 @@
-Artikelnummer,Werk,Lagerort,Mindestbestand,Disponent,Laenge_cm_werk,Breite_cm_werk,Hoehe_cm_werk,Mass_Einheit,Lieferant_ID,Status
-A0068,Werk Nord,D400,187,D01,16.4,9.8,,cm,2,Freigegeben
-A0068,Werk Nord,D400,187,D01,16.4,9.8,,cm,2,Ausgelistet
-A0093,Werk Süd,B200,63,D04,11.8,4.7,4.2,cm,1,Freigegeben
-A0093,Werk Süd,B200,63,D04,11.8,4.7,4.2,cm,19,Freigegeben
-A0391,Werk Ost,D400,20,D03,16.2,9.7,20.7,cm,17,Freigegeben
-A0391,Werk Ost,D400,20,D03,16.2,9.7,20.7,cm,19,Freigegeben

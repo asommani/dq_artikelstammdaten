@@ -1,4 +1,0 @@
-tabelle,spalte,gueltig,gesamt,fehlend,valid,valid_rate,invalid,invalid_rate,vorhandene_werte,invalid_werte
-artikeldaten_grunddaten,Mengeneinheit,"g, ml, kg, l",147,3,138,0.9387755102040817,6,0.04081632653061224,"{'g': 73, 'ml': 65, 'mm': 6}",['mm']
-artikeldaten_grunddaten,Temperaturzone,"Ambient, Kuehl, Tiefkuehl, Kühl, Tiefkühl",147,5,142,0.9659863945578231,0,0.0,"{'Ambient': 83, 'Kühl': 52, 'Tiefkühl': 7}",[]
-artikeldaten_grunddaten,Pfandpflicht,"Ja, Nein",147,2,145,0.9863945578231292,0,0.0,"{'Nein': 124, 'Ja': 21}",[]
