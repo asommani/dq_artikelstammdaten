@@ -3,9 +3,8 @@ data/raw/*
 !data/raw/.gitkeep
 *.pdf
 *.pptx
-dm_pres_dashboard.html
-README_with_dash.md
-docs/*
+pres_dashboard.html
+
 # ─── Python ─────────────────────────────────────────────────────────────────
 __pycache__/
 
