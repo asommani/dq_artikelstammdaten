@@ -82,7 +82,7 @@ dq_artikelstammdaten/
 ├── config/          # configuration & business rules
 ├── src/             # modular analysis logic
 ├── data/raw/        # input data (not tracked)
-├── output/          # generated results (CSVs, dashboard) (not tracked)
+├── output/          # generated results (CSVs, dashboard, png) (not tracked)
 ├── diagnostics/     # exploratory scripts
 └── run_analysis.py
 ```
