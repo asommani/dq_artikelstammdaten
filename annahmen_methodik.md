@@ -61,7 +61,7 @@ Alle drei Fälle sind für nachgelagerte Prozesse funktional äquivalent zu fehl
 
 1. Entfernen exakter Duplikate (`drop_duplicates()` über alle Spalten).
     
-2. Entfernen verbleibender Duplikate auf Basis des zusammengesetzten Schlüssels `[Artikelnummer, Werk]` (Beibehaltung der ersten Vorkommens).
+2. Entfernen verbleibender Duplikate auf Basis des zusammengesetzten Schlüssels `[Artikelnummer, Werk]` (Beibehaltung des ersten Vorkommens).
     
 
 Dies ist eine bewusste Designentscheidung: Konflikte in Nicht-Dimensionsfeldern werden als separates Datenqualitätsproblem behandelt (siehe Check Werksdaten Konflikte) und nicht in den Konsistenz-KPI übernommen. Der Konsistenz-KPI beantwortet ausschließlich die Frage: Wie viele der vergleichbaren Paare stimmen überein?
@@ -104,7 +104,7 @@ Daraus folgt, dass der KPI ausschließlich auf `Mass_Einheit` in den Werksdaten 
 
 **Sentinel-Werte:** Die expliziten Sentinel-Werte `9999.99` und `0.01` werden als bekannte Platzhalterpreise markiert (konfiguriert in `rules.yaml → preisvalidierung.sentinel_werte`).
 
-**Preisbereich:** Preise außerhalb des Bereichs `[0.10, 999.99]` EUR (nach Entfernung der Sentinel-Werte) werden als außerhalb des gültigen Bereichs klassifiziert. Die Untergrenze (`preis_min = 0.10`) dient dazu, nahezu nullwertige Nicht-Sentinel-Preise zu erkennen. Die Obergrenze (`preis_max = 999.99`) identifiziert unplausible Ausreißer. Beide Schwellenwerte sind in `rules.yaml → schwellenwerte` konfiguriert.
+**Preisbereich:** Preise außerhalb des Bereichs `[0.10, 999.99]` EUR/CHF (nach Entfernung der Sentinel-Werte) werden als außerhalb des gültigen Bereichs klassifiziert. Die Untergrenze (`preis_min = 0.10`) dient dazu, nahezu nullwertige Nicht-Sentinel-Preise zu erkennen. Die Obergrenze (`preis_max = 999.99`) identifiziert unplausible Ausreißer. Beide Schwellenwerte sind in `rules.yaml → schwellenwerte` konfiguriert.
 
 **Kategorisierung ungültiger Werte:** Sentinel-Werte, Preise außerhalb des gültigen Bereichs sowie ungültige Währungen werden als separate Masken-Kategorien erkannt und zu einer gemeinsamen `mask_invalid` zusammengeführt. Ein Preis wird dabei nur einmal gezählt, auch wenn er in mehrere Kategorien fällt (Union-Semantik).
 
@@ -133,7 +133,7 @@ Die Orphan-Rate wird als `n_orphan / n_unique` berechnet (176 / 323 = 54.5%) und
 
 Diese Unterscheidung ist wesentlich: Exakte Duplikate sind ein Fehler im Data Management (z. B. doppelte Inserts), während Konflikte auf inkonsistente Stammdaten über verschiedene Systeme oder Erfassungspunkte hinweg hinweisen.
 
-**Auflösungsstrategie im Konsistenz-KPI:** Wenn die Werksdaten Konflikte enthalten, wird für die Konsistenzprüfung der Maße die erste Vorkommens nach Entfernung exakter Duplikate verwendet. Es wird kein Versuch unternommen zu bestimmen, welcher der konfligierenden Werte „korrekt“ ist, da dies Domänenwissen erfordert. Auffällig ist, dass in allen drei Konfliktfällen die Dimensionsspalten (`Laenge_cm_werk`, `Breite_cm_werk`, `Hoehe_cm_werk`) identisch sind, sodass diese Konflikte keinen Einfluss auf das Ergebnis des Konsistenz Maße KPI haben.
+**Auflösungsstrategie im Konsistenz-KPI:** Wenn die Werksdaten Konflikte enthalten, wird für die Konsistenzprüfung der Maße das erste Vorkommens nach Entfernung exakter Duplikate verwendet. Es wird kein Versuch unternommen zu bestimmen, welcher der konfligierenden Werte „korrekt“ ist, da dies Domänenwissen erfordert. Auffällig ist, dass in allen drei Konfliktfällen die Dimensionsspalten (`Laenge_cm_werk`, `Breite_cm_werk`, `Hoehe_cm_werk`) identisch sind, sodass diese Konflikte keinen Einfluss auf das Ergebnis des Konsistenz Maße KPI haben.
 
 ---
 ## 11. Plausibilitätscheck Maße (Dimension Plausibility)
@@ -189,6 +189,6 @@ Die folgenden Probleme wurden durch manuelle Analyse identifiziert und sind nich
 
 **Mengeneinheit semantisch falsch für Kategorie:** Mehrere Obst & Gemüse Artikel haben `Mengeneinheit = ml` (z. B. Kartoffel, Banane), was semantisch nicht korrekt ist, da frische Produkte üblicherweise in g oder als Stückeinheiten gemessen werden und nicht in Millilitern.
 
-**Pfandpflicht = Ja bei Nicht-Getränken:** Im deutschen Markt gilt Pfand primär für Getränkeverpackungen und bestimmte Glasverpackungen (z. B. Joghurtgläser). Es wurden jedoch mehrere Artikel identifiziert, bei denen eine Pfandpflicht schwer nachvollziehbar ist, die aber dennoch `Pfandpflicht = Ja` aufweisen, darunter Kartoffel Bio (A0004), Karotte Bio (A0068), Keks Bio (A0077), Croissant (A0082) und Olivenöl (A0403) sowie weitere.
+**Pfandpflicht = Ja bei Nicht-Getränken:** In der Regel gilt Pfand primär für Getränkeverpackungen und bestimmte Glasverpackungen (z. B. Joghurtgläser). Es wurden jedoch mehrere Artikel identifiziert, bei denen eine Pfandpflicht schwer nachvollziehbar ist, die aber dennoch `Pfandpflicht = Ja` aufweisen, darunter Kartoffel Bio (A0004), Karotte Bio (A0068), Keks Bio (A0077), Croissant (A0082) und Olivenöl (A0403) sowie weitere.
 
 **Hinweis zum Scope:** Diese Befunde werden hier als bekannte Einschränkungen der automatisierten Pipeline dokumentiert. Die Erkennung semantischer Fehlzuordnungen im großen Maßstab würde eine **spaltenübergreifende Regelvalidierung** erfordern (z. B. wenn Warengruppe = Tiefkühlkost, dann muss Temperaturzone = Tiefkühl sein) oder eine Anreicherung mit externen Referenzdaten. Beide Ansätze sind als Erweiterung des bestehenden Frameworks über `rules.yaml` umsetzbar.

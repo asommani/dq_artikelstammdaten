@@ -102,7 +102,7 @@ As a result, the KPI is computed exclusively on `Mass_Einheit` in Werksdaten, wi
 
 **Sentinel values:** The explicit sentinel values `9999.99` and `0.01` are flagged as known placeholder prices (configured in `rules.yaml → preisvalidierung.sentinel_werte`).
 
-**Price range:** Prices outside the range `[0.10, 999.99]` EUR (after sentinel removal) are flagged as out-of-range. The lower bound (`preis_min = 0.10`) is intended to catch near-zero non-sentinel prices. The upper bound (`preis_max = 999.99`) catches implausible outliers. Both thresholds are configured in `rules.yaml → schwellenwerte`.
+**Price range:** Prices outside the range `[0.10, 999.99]` EUR/CHF (after sentinel removal) are flagged as out-of-range. The lower bound (`preis_min = 0.10`) is intended to catch near-zero non-sentinel prices. The upper bound (`preis_max = 999.99`) catches implausible outliers. Both thresholds are configured in `rules.yaml → schwellenwerte`.
 
 **Invalid categorization:** Sentinel values, out-of-range prices, and invalid currencies are detected as separate mask categories and combined into a single `mask_invalid`. A price can only be counted once even if it falls into multiple categories (union semantics).
 
@@ -189,6 +189,6 @@ The following issues were identified through manual inspection and are not cover
 
 **Mengeneinheit semantically wrong for category:** Several Obst & Gemüse articles have Mengeneinheit = ml (e.g., Kartoffel, Banane), which is semantically incorrect, as fresh produce is typically measured in g or as whole units, not millilitres.
 
-**Pfandpflicht = Ja on non-beverage articles:** In the German market, Pfand applies primarily to beverage containers and certain glass packaging (e.g., yogurt jars). However, a number of articles for which a deposit is difficult to justify were found carrying Pfandpflicht = Ja, including Kartoffel Bio (A0004), Karotte Bio (A0068), Keks Bio (A0077), Croissant (A0082), and Olivenöl (A0403), among others.
+**Pfandpflicht = Ja on non-beverage articles:** Typically, Pfand applies primarily to beverage containers and certain glass packaging (e.g., yogurt jars). However, a number of articles for which a deposit is difficult to justify were found carrying Pfandpflicht = Ja, including Kartoffel Bio (A0004), Karotte Bio (A0068), Keks Bio (A0077), Croissant (A0082), and Olivenöl (A0403), among others.
 
 **Scope note:** These findings are documented here as known limitations of the automated pipeline. Detecting semantic misassignments at scale would require **cross-field rule validation** (e.g., if Warengruppe = Tiefkühlkost then Temperaturzone must = Tiefkühl) or enrichment with external reference data. Both are feasible extensions to the current framework via `rules.yaml`.
