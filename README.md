@@ -120,7 +120,15 @@ Copy the Excel file into:
 data/raw/<filename>.xlsx
 ```
 
+Then update `config.yaml` with the actual filename:
+
+```
+datei:
+  filename: "<filename>.xlsx"
+```
+
 The raw data is excluded from version control.
+
 
 ---
 
