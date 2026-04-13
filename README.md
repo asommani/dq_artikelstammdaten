@@ -185,16 +185,13 @@ The pipeline automatically applies the new rules.
 
 See `requirements.txt`.
 
-Core dependencies:
 - pandas
 - numpy
 - PyYAML
 - openpyxl
 - plotly
-- kaleido (required for dashboard PNG export)
-
-Optional:
-- dataframe_image (only for PNG export of tables)
+- kaleido
+- dataframe_image 
 
 ---
 
