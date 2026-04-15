@@ -35,7 +35,7 @@ print(f"Zeilen gesamt:         {len(df)}")
 print(f"Eindeutige Artikelnr.: {df['Artikelnummer'].nunique()}")
 print(df.columns)
 #%%
-# show that even all columns together don't give a clean key
+# show that there is no clean key
 combos = [
     ["Artikelnummer"],
     ["Artikelnummer", "Kategorie"],
